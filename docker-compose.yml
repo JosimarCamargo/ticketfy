@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:9.6-alpine
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD:
+      POSTGRES_USER: root
+    volumes:
+      - $HOME/Docker/Volumes/PostgresAlpine9.6:/var/lib/postgresql/data
