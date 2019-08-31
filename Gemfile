@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
@@ -24,6 +26,7 @@ group :development do
   gem 'better_errors', '~> 2.5', '>= 2.5.1'
   gem 'binding_of_caller'
   gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'rubocop-performance', '~> 1.4', '>= 1.4.1'
   gem 'rubocop-rails', '~> 2.3'
 end
 
