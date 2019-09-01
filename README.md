@@ -21,4 +21,8 @@ Things you may want to cover:
 
 * Deployment instructions
 
-* ...
+* User Default
+email :`admin@ticketfy`
+pass: `changeme`
+
+* Add Todo
