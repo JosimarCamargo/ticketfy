@@ -72,7 +72,7 @@ blocks:
           - sem-service start postgres
           - sem-version ruby 2.6.1
           - bundle install --deployment
-          - bundle exec rake db:setup
+          - bundle exec rake db:setup RAILS_ENV=test
 
       jobs:
       - name: RSpec - model tests
@@ -96,7 +96,7 @@ blocks:
           - sem-service start postgres
           - sem-version ruby 2.6.1
           - bundle install --deployment --path vendor/bundle
-          - bundle exec rake db:setup
+          - bundle exec rake db:setup RAILS_ENV=test
 
       jobs:
       - name: RSpec - feature specs
