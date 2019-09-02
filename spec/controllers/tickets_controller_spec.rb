@@ -13,9 +13,10 @@ RSpec.describe TicketsController, type: :controller do
     attributes_for(:ticket).except(:title)
   end
 
+  let(:ticket) { FactoryBot.create(:ticket) }
+
   describe 'GET #index' do
     it 'returns a success response' do
-      Ticket.create! valid_attributes
       get :index, params: {}
       expect(response).to be_successful
     end
@@ -23,7 +24,6 @@ RSpec.describe TicketsController, type: :controller do
 
   describe 'GET #show' do
     it 'returns a success response' do
-      ticket = Ticket.create! valid_attributes
       get :show, params: { id: ticket.to_param }
       expect(response).to be_successful
     end
@@ -38,7 +38,6 @@ RSpec.describe TicketsController, type: :controller do
 
   describe 'GET #edit' do
     it 'returns a success response' do
-      ticket = Ticket.create! valid_attributes
       get :edit, params: { id: ticket.to_param }
       expect(response).to be_successful
     end
@@ -79,13 +78,11 @@ RSpec.describe TicketsController, type: :controller do
       end
 
       it 'updates the requested ticket' do
-        ticket = Ticket.create! valid_attributes
         put :update, params: { id: ticket.to_param, ticket: new_attributes }
         expect(ticket.reload).to have_attributes(Ticket.new(new_attributes).attributes.except('created_at', 'id', 'updated_at'))
       end
 
       it 'redirects to the ticket' do
-        ticket = Ticket.create! valid_attributes
         put :update, params: { id: ticket.to_param, ticket: valid_attributes }
         expect(response).to redirect_to(ticket)
       end
@@ -93,7 +90,6 @@ RSpec.describe TicketsController, type: :controller do
 
     context 'with invalid params' do
       it 'redirects to ticket without losing title' do
-        ticket = Ticket.create! valid_attributes
         ticket_title = ticket.title
         put :update, params: { id: ticket.to_param, ticket: invalid_attributes }
         expect(response).to redirect_to(ticket)
