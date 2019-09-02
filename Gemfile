@@ -17,11 +17,13 @@ gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
+  gem 'capybara', '~> 3.28'
   gem 'factory_bot_rails'
   gem 'faker', git: 'https://github.com/faker-ruby/faker.git', branch: 'master'
   gem 'pry-byebug', '~> 3.7'
   gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
   gem 'solargraph', '~> 0.37.1'
+  gem 'webdrivers', '~> 4.0'
 end
 
 group :development do
