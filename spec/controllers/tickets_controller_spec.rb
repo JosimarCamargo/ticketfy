@@ -79,7 +79,9 @@ RSpec.describe TicketsController, type: :controller do
 
       it 'updates the requested ticket' do
         put :update, params: { id: ticket.to_param, ticket: new_attributes }
-        expect(ticket.reload).to have_attributes(Ticket.new(new_attributes).attributes.except('created_at', 'id', 'updated_at'))
+        ticket_attributes = Ticket.new(new_attributes).attributes
+                                  .except('created_at', 'id', 'updated_at')
+        expect(ticket.reload).to have_attributes(ticket_attributes)
       end
 
       it 'redirects to the ticket' do

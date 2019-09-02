@@ -17,6 +17,11 @@ AllCops:
     - 'actionmailbox/test/dummy/**/*'
     - 'actiontext/test/dummy/**/*'
     - '**/node_modules/**/*'
+    - 'db/schema.rb'
+    - 'bin/*'
+    - 'db/seeds.rb'
+    - 'db/migrate/*'
+    - 'config/**/*'
 
 Performance:
   Exclude:
@@ -45,6 +50,9 @@ Style/AndOr:
 Style/BracesAroundHashParameters:
   Enabled: true
   EnforcedStyle: context_dependent
+
+Style/Documentation:
+  Enabled: false
 
 # Align `when` with `case`.
 Layout/CaseIndentation:
@@ -180,6 +188,8 @@ Style/StringLiterals:
   Enabled: true
   EnforcedStyle: single_quotes
   AutoCorrect: true
+  Exclude:
+    - 'db/schema.rb'
 
 # Detect hard tabs, no hard tabs.
 Layout/Tab:
@@ -276,3 +286,12 @@ Performance/ReverseEach:
 
 Performance/UnfreezeString:
   Enabled: true
+
+Metrics/LineLength:
+  Enabled: true
+  Max: 100
+
+Metrics/BlockLength:
+  Enabled: true
+  Exclude:
+   - 'spec/**/*.rb'

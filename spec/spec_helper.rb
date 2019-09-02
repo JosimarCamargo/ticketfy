@@ -5,7 +5,8 @@ require 'webdrivers/chromedriver'
 
 # TODO: move this to a capybara initializer on test environment
 # Capybara settings
-Capybara.default_driver = :selenium_chrome_headless # :selenium and :selenium_chrome_headless are also registered
+# Capybara driver registered :selenium and :selenium_chrome_headless
+Capybara.default_driver = :selenium_chrome_headless
 Capybara.javascript_driver = :selenium_chrome_headless
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration

@@ -22,5 +22,4 @@ RSpec.describe 'User login', type: :feature do
     expect(page).to have_current_path(new_user_session_path)
   end
 end
-# TODO:
-# add logout
+# TODO: add logout
