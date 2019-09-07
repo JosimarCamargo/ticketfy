@@ -3,6 +3,7 @@
 <table>
   <thead>
     <tr>
+      <th>Number</th>
       <th>Title</th>
       <th>Content</th>
       <th>Status</th>
@@ -13,6 +14,7 @@
   <tbody>
     <% @tickets.each do |ticket| %>
       <tr>
+        <td>#<%= ticket.id %></td>
         <td><%= ticket.title %></td>
         <td><%= ticket.content %></td>
         <td><%= ticket.status %></td>
