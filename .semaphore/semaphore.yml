@@ -95,7 +95,7 @@ blocks:
           - cache restore
           - sem-service start postgres
           - sem-version ruby 2.6.1
-          - bundle install --deployment --path vendor/bundle
+          - bundle install --deployment
           - bundle exec rake db:setup RAILS_ENV=test
 
       jobs:
