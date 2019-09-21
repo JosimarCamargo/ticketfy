@@ -1,5 +1,8 @@
 # README
 
+## Code Status
+[![Build Status](https://semaphoreci.com/api/v1/josimarcamargo/ticketfy/branches/master/shields_badge.svg)](https://semaphoreci.com/josimarcamargo/ticketfy)
+
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
