@@ -1,6 +1,6 @@
 # TicketFy
 
-[![Build Status](https://semaphoreci.com/api/v1/josimarcamargo/ticketfy/branches/master/shields_badge.svg)](https://semaphoreci.com/josimarcamargo/ticketfy)
+[![Build Status](https://semaphoreci.com/api/v1/ticketfy/ticketfy/branches/master/badge.svg)](https://semaphoreci.com/ticketfy/ticketfy)
 
 This README would normally document whatever steps are necessary to get the
 application up and running.
