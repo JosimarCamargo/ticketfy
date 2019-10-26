@@ -17,6 +17,7 @@ gem 'turbolinks', '~> 5'
 gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
+  gem 'awesome_print', '~> 1.8'
   gem 'brakeman', '~> 4.6', '>= 4.6.1'
   gem 'capybara', '~> 3.28'
   gem 'factory_bot_rails'
