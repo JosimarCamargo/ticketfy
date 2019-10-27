@@ -38,8 +38,8 @@ group :development do
   gem 'binding_of_caller'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'pry-rails'
-  gem 'rubocop-performance', '~> 1.4', '>= 1.4.1'
-  gem 'rubocop-rails', '~> 2.3'
+  gem 'rubocop-performance', '~> 1.4', '>= 1.4.1', require: false
+  gem 'rubocop-rails', '~> 2.3', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
