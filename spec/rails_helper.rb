@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require 'simplecov'
+# To run see the test coverage use something like: COVERAGE=true rspec
+SimpleCov.start 'rails' if ENV['COVERAGE']
+
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 require 'capybara/rspec'

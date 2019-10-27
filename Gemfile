@@ -19,13 +19,17 @@ gem 'uglifier', '>= 1.3.0'
 group :development, :test do
   gem 'awesome_print', '~> 1.8'
   gem 'brakeman', '~> 4.6', '>= 4.6.1'
-  gem 'capybara', '~> 3.28'
   gem 'factory_bot_rails'
-  gem 'faker', git: 'https://github.com/faker-ruby/faker.git', branch: 'master'
   gem 'pry-byebug', '~> 3.7'
   gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
-  gem 'shoulda-matchers'
   gem 'solargraph', '~> 0.37.1'
+end
+
+group :test do
+  gem 'capybara', '~> 3.28'
+  gem 'faker', git: 'https://github.com/faker-ruby/faker.git', branch: 'master'
+  gem 'shoulda-matchers'
+  gem 'simplecov', '~> 0.17.1', require: false
   gem 'webdrivers', '~> 4.0'
 end
 
@@ -34,8 +38,8 @@ group :development do
   gem 'binding_of_caller'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'pry-rails'
-  gem 'rubocop-performance', '~> 1.4', '>= 1.4.1'
-  gem 'rubocop-rails', '~> 2.3'
+  gem 'rubocop-performance', '~> 1.4', '>= 1.4.1', require: false
+  gem 'rubocop-rails', '~> 2.3', require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
