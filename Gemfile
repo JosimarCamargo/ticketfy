@@ -30,7 +30,7 @@ group :test do
   gem 'faker', git: 'https://github.com/faker-ruby/faker.git', branch: 'master'
   gem 'shoulda-matchers'
   gem 'simplecov', '~> 0.17.1', require: false
-  gem 'webdrivers', '~> 4.0'
+  gem 'webdrivers', '~> 4.1'
 end
 
 group :development do
