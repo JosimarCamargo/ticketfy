@@ -18,7 +18,7 @@ gem 'uglifier', '>= 1.3.0'
 
 group :development, :test do
   gem 'awesome_print', '~> 1.8'
-  gem 'brakeman', '~> 4.6', '>= 4.6.1'
+  gem 'brakeman', '~> 4.7'
   gem 'factory_bot_rails'
   gem 'pry-byebug', '~> 3.7'
   gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
