@@ -21,7 +21,7 @@ group :development, :test do
   gem 'brakeman', '~> 4.6', '>= 4.6.1'
   gem 'factory_bot_rails'
   gem 'pry-byebug', '~> 3.7'
-  gem 'rspec-rails', '~> 3.8', '>= 3.8.2'
+  gem 'rspec-rails', '~> 3.9'
   gem 'solargraph', '~> 0.37.1'
 end
 
