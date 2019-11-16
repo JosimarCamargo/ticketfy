@@ -28,7 +28,6 @@ end
 group :test do
   gem 'capybara', '~> 3.28'
   gem 'faker', git: 'https://github.com/faker-ruby/faker.git', branch: 'master'
-  gem 'shoulda-matchers'
   gem 'simplecov', '~> 0.17.1', require: false
   gem 'webdrivers', '~> 4.0'
 end

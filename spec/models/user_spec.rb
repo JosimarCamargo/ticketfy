@@ -6,18 +6,29 @@ RSpec.describe User, type: :model do
   subject { described_class.new(user_params) }
   let(:user_params) { attributes_for(:user) }
 
-  describe 'validations' do
-    it { is_expected.to validate_presence_of(:email) }
-    it { is_expected.to validate_presence_of(:password) }
-    it { is_expected.to validate_length_of(:password).is_at_least(6) }
-
-    context 'when has email and password' do
+  describe '#valid? ' do
+    context 'With all required parameters' do
       it { is_expected.to be_valid }
     end
 
-    context 'when email has incorrect format' do
-      let(:user_params) { { password: '123456', email: '123' } }
-      it { is_expected.to be_invalid }
+    context 'When is not valid' do
+      it 'without a email' do
+        subject.email = nil
+        expect(subject).not_to be_valid
+        expect(subject.errors.messages[:email]).to eq ["can't be blank"]
+      end
+
+      it 'with an email has incorrect format' do
+        subject.email = '123'
+        expect(subject).not_to be_valid
+        expect(subject.errors.messages[:email]).to eq ['is invalid']
+      end
+
+      it 'without a password' do
+        subject.password = ''
+        expect(subject).not_to be_valid
+        expect(subject.errors.messages[:password]).to eq ["can't be blank"]
+      end
     end
   end
 end
