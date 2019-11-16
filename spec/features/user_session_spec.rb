@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'User Session', type: :feature do
-  let(:user) { FactoryBot.create(:user) }
+  let(:user) { create(:user) }
   feature 'Users Login' do
     scenario 'login valid inputs' do
       visit root_path # or user_session_path

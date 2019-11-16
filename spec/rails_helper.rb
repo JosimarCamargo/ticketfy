@@ -1,16 +1,17 @@
 # frozen_string_literal: true
 
-require 'simplecov'
 # To run see the test coverage use something like: COVERAGE=true rspec
-SimpleCov.start 'rails' if ENV['COVERAGE']
+if ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start 'rails'
+end
 
-# This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'spec_helper'
 require 'capybara/rspec'
 require 'webdrivers/chromedriver'
 
-Capybara.default_driver = :selenium_chrome_headless
-Capybara.javascript_driver = :selenium_chrome_headless
+Capybara.default_driver = :selenium_chrome
+Capybara.javascript_driver = :selenium_chrome
 
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)
@@ -36,6 +37,8 @@ end
 RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::IntegrationHelpers, type: :feature
+  config.include Devise::Test::IntegrationHelpers, type: :request
+
   config.extend ControllerMacros, type: :controller
 
   config.include FactoryBot::Syntax::Methods
