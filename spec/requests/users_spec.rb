@@ -1,14 +1,10 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require_relative 'shared_examples'
+require_relative 'load_shared'
 
 RSpec.describe 'Users Management' do
-  before do
-    # There is a default user on seed admin@ticketfy
-    user = User.find_by(email: 'admin@ticketfy') || create(:user)
-    sign_in user
-  end
+  include_context 'do_login_first'
 
   describe 'GET /users' do
     let!(:resource) { create_list(:user, 5).first.email }

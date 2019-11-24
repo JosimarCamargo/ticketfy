@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require_relative 'shared_examples'
+require_relative 'load_shared'
 
 RSpec.describe 'Tickets Management' do
-  before do
-    user = create(:user)
-    sign_in user
-  end
+  include_context 'do_login_first'
 
   describe 'GET /tickets' do
     let!(:resource) { create_list(:ticket, 5).first.title }
