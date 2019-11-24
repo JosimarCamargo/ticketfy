@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require_relative 'shared_examples'
 
 RSpec.describe 'Users Management' do
   before do
@@ -10,14 +11,11 @@ RSpec.describe 'Users Management' do
   end
 
   describe 'GET /users' do
-    let!(:users) { create_list(:user, 5) }
+    let!(:resource) { create_list(:user, 5).first.email }
     subject { get '/users' }
 
     context 'with valid parameters' do
-      it 'returns a user list' do
-        expect(subject).to eq(200)
-        expect(response.body).to include(users.first.email)
-      end
+      it_behaves_like 'success_with_content'
     end
   end
 
@@ -27,11 +25,9 @@ RSpec.describe 'Users Management' do
     context 'when find the user' do
       let!(:user) { create(:user) }
       let(:user_id) { user.id }
+      let(:resource) { user.email }
 
-      it 'returns a correct user' do
-        expect(subject).to eq(200)
-        expect(response.body).to include(user.email)
-      end
+      it_behaves_like 'success_with_content'
     end
 
     context 'when does not find the user' do
@@ -78,12 +74,10 @@ RSpec.describe 'Users Management' do
   describe 'GET /users/:id/edit' do
     context 'when success' do
       let(:user) { create(:user) }
+      let(:resource) { user.email }
       subject { get "/users/#{user.id}/edit" }
 
-      it 'returns a success response' do
-        expect(subject).to eq(200)
-        expect(response.body).to include(user.email)
-      end
+      it_behaves_like 'success_with_content'
     end
   end
 
