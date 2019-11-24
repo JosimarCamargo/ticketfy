@@ -48,6 +48,7 @@ class TicketsController < ApplicationController
     def set_ticket
       @ticket = Ticket.find(params[:id])
     rescue ActiveRecord::RecordNotFound
+      # TODO: dry this rescue across controllers
       redirect_to tickets_url, notice: 'Ticket not found.'
     end
 

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Tickets' do
+RSpec.describe 'Tickets Management' do
   before do
     user = create(:user)
     sign_in user
