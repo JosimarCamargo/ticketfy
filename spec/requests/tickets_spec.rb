@@ -1,22 +1,17 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require_relative 'load_shared'
 
-RSpec.describe 'Tickets' do
-  before do
-    user = create(:user)
-    sign_in user
-  end
+RSpec.describe 'Tickets Management' do
+  include_context 'do_login_first'
 
   describe 'GET /tickets' do
-    let!(:tickets) { create_list(:ticket, 5) }
+    let!(:resource) { create_list(:ticket, 5).first.title }
     subject { get '/tickets' }
 
     context 'with valid parameters' do
-      it 'returns a ticket list' do
-        expect(subject).to eq(200)
-        expect(response.body).to include(tickets.first.title)
-      end
+      it_behaves_like 'success_with_content'
     end
   end
 
@@ -26,10 +21,12 @@ RSpec.describe 'Tickets' do
     context 'when find the ticket' do
       let!(:ticket) { create(:ticket) }
       let(:ticket_id) { ticket.id }
+      let(:resource) { ticket.title }
 
-      it 'returns a correct ticket' do
-        expect(subject).to eq(200)
-        expect(response.body).to include(ticket.title)
+      it_behaves_like 'success_with_content'
+
+      it 'shows ticket body' do
+        subject
         expect(response.body).to include(ticket.content)
       end
     end
@@ -78,11 +75,13 @@ RSpec.describe 'Tickets' do
   describe 'GET /tickets/:id/edit' do
     context 'when success' do
       let(:ticket) { create(:ticket) }
+      let(:resource) { ticket.title }
       subject { get "/tickets/#{ticket.id}/edit" }
 
-      it 'returns a success response' do
-        expect(subject).to eq(200)
-        expect(response.body).to include(ticket.title)
+      it_behaves_like 'success_with_content'
+
+      it 'shows ticket body' do
+        subject
         expect(response.body).to include(ticket.content)
       end
     end
