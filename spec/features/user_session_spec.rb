@@ -27,7 +27,8 @@ RSpec.describe 'User Session', type: :feature do
     scenario 'success' do
       sign_in(user) # sign_in(user) is a Devise::Test::IntegrationHelpers
       visit root_path
-      skip 'Add Navbar with logout button'
+      click_on 'Logout'
+      expect(page).to have_content('You need to sign in or sign up before continuing.')
     end
   end
 end
