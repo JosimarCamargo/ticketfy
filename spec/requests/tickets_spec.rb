@@ -12,9 +12,8 @@ RSpec.describe 'Tickets Management' do
 
   describe 'GET /tickets' do
     let!(:resource) { create_list(:ticket, 5).first }
-    before do
-      get '/tickets'
-    end
+
+    before { get '/tickets' }
 
     context 'with valid parameters' do
       it_behaves_like 'success_with_resource', %i[title content]
@@ -103,9 +102,8 @@ RSpec.describe 'Tickets Management' do
       let(:new_attributes) { { title: nil } }
 
       it 'does not update the ticket' do
-        ticket_title = record.title
         expect(response).to have_http_status(200)
-        expect(record.reload.title).to eq ticket_title
+        expect(record.reload).not_to have_attributes(new_attributes)
       end
     end
   end

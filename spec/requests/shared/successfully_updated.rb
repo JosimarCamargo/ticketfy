@@ -8,7 +8,7 @@ RSpec.shared_examples 'successfully_updated' do |model_class|
   it "updates the requested #{model_class} on database" do
     expect(subject).to redirect_to(record)
     record_attributes = model_class.new(new_attributes).attributes
-                                   .except('created_at', 'id', 'updated_at')
+                                   .except('created_at', 'id', 'encrypted_password', 'updated_at')
 
     expect(record.reload).to have_attributes(record_attributes)
   end
