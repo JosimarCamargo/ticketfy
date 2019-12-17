@@ -1,41 +1,47 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require_relative 'load_shared'
+require_relative 'shared/success_with_resource'
+require_relative 'shared/successfully_created'
+require_relative 'shared/successfully_updated'
+require_relative 'shared/successfully_deleted'
+require_relative 'shared/contexts'
 
 RSpec.describe 'Tickets Management' do
   include_context 'do_login_first'
 
   describe 'GET /tickets' do
-    let!(:resource) { create_list(:ticket, 5).first.title }
-    subject { get '/tickets' }
+    let!(:resource) { create_list(:ticket, 5).first }
+    before do
+      get '/tickets'
+    end
 
     context 'with valid parameters' do
-      it_behaves_like 'success_with_content'
+      it_behaves_like 'success_with_resource', %i[title content]
     end
   end
 
   describe 'GET /tickets/:id' do
-    subject { get "/tickets/#{ticket_id}" }
+    let!(:resource) { create(:ticket) }
+
+    before do
+      get "/tickets/#{resource_id}"
+    end
 
     context 'when find the ticket' do
-      let!(:ticket) { create(:ticket) }
-      let(:ticket_id) { ticket.id }
-      let(:resource) { ticket.title }
-
-      it_behaves_like 'success_with_content'
+      let(:resource_id) { resource.id }
+      it_behaves_like 'success_with_resource', %i[title content]
 
       it 'shows ticket body' do
-        subject
-        expect(response.body).to include(ticket.content)
+        expect(response.body).to include(resource.content)
       end
     end
 
     context 'when does not find the ticket' do
-      let(:ticket_id) { 9999 }
+      let(:resource_id) { 9999 }
 
       it 'redirects' do
-        expect(subject).to eq(302)
+        expect(response).to have_http_status(302)
       end
     end
   end
@@ -46,10 +52,7 @@ RSpec.describe 'Tickets Management' do
     context 'with valid parameters' do
       let(:ticket_params) { attributes_for(:ticket) }
 
-      it 'creates a ticket' do
-        expect { subject }.to change(Ticket, :count).by(1)
-        expect(response).to redirect_to(Ticket.last)
-      end
+      it_behaves_like 'successfully_created', Ticket
     end
 
     context 'with invalid parameters' do
@@ -66,53 +69,43 @@ RSpec.describe 'Tickets Management' do
     context 'when success' do
       subject { get '/tickets/new' }
 
-      it 'returns a success' do
-        expect(subject).to eq(200)
-      end
+      it { is_expected.to eq(200) }
     end
   end
 
   describe 'GET /tickets/:id/edit' do
+    let!(:resource) { create(:ticket) }
+
+    before do
+      get "/tickets/#{resource_id}"
+    end
+
     context 'when success' do
-      let(:ticket) { create(:ticket) }
-      let(:resource) { ticket.title }
-      subject { get "/tickets/#{ticket.id}/edit" }
-
-      it_behaves_like 'success_with_content'
-
-      it 'shows ticket body' do
-        subject
-        expect(response.body).to include(ticket.content)
-      end
+      let(:resource_id) { resource.id }
+      it_behaves_like 'success_with_resource', %i[title content]
     end
   end
 
   describe 'PUT /tickets/:id' do
-    let(:ticket) { create(:ticket) }
+    let(:record) { create(:ticket) }
 
-    subject do
-      put "/tickets/#{ticket.id}", params: { ticket: new_attributes }
+    before do
+      put "/tickets/#{record.id}", params: { ticket: new_attributes }
     end
 
     context 'with valid parameters' do
       let(:new_attributes) { attributes_for(:ticket) }
 
-      it 'updates the requested ticket' do
-        expect(subject).to redirect_to(ticket)
-        ticket_attributes = Ticket.new(new_attributes).attributes
-                                  .except('created_at', 'id', 'updated_at')
-
-        expect(ticket.reload).to have_attributes(ticket_attributes)
-      end
+      it_behaves_like 'successfully_updated', Ticket
     end
 
     context 'with invalid parameters' do
       let(:new_attributes) { { title: nil } }
 
       it 'does not update the ticket' do
-        ticket_title = ticket.title
-        expect(subject).to eq(200)
-        expect(ticket.reload.title).to eq ticket_title
+        ticket_title = record.title
+        expect(response).to have_http_status(200)
+        expect(record.reload.title).to eq ticket_title
       end
     end
   end
@@ -125,10 +118,7 @@ RSpec.describe 'Tickets Management' do
         delete "/tickets/#{ticket.id}"
       end
 
-      it 'deletes the ticket' do
-        expect { subject }.to change { Ticket.count }.from(1).to(0)
-        expect(subject).to eq(302)
-      end
+      it_behaves_like 'successfully_deleted', Ticket
     end
   end
 end
