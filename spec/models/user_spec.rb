@@ -1,33 +1,31 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require_relative 'shared/invalid_with_message'
 
 RSpec.describe User, type: :model do
   subject { described_class.new(user_params) }
-  let(:user_params) { attributes_for(:user) }
 
   describe '#valid? ' do
     context 'With all required parameters' do
+      let(:user_params) { attributes_for(:user) }
       it { is_expected.to be_valid }
     end
 
     context 'When is not valid' do
-      it 'without a email' do
-        subject.email = nil
-        expect(subject).not_to be_valid
-        expect(subject.errors.messages[:email]).to eq ["can't be blank"]
+      context 'Without email' do
+        let(:user_params) { attributes_for(:user).except(:email) }
+        it_behaves_like 'invalid_with_message', :email, "can't be blank"
       end
 
-      it 'with an email has incorrect format' do
-        subject.email = '123'
-        expect(subject).not_to be_valid
-        expect(subject.errors.messages[:email]).to eq ['is invalid']
+      context 'Without a password' do
+        let(:user_params) { attributes_for(:user).except(:password) }
+        it_behaves_like 'invalid_with_message', :password, "can't be blank"
       end
 
-      it 'without a password' do
-        subject.password = ''
-        expect(subject).not_to be_valid
-        expect(subject.errors.messages[:password]).to eq ["can't be blank"]
+      context 'When email has incorrect format' do
+        let(:user_params) { attributes_for(:user).merge(email: 'asd') }
+        it_behaves_like 'invalid_with_message', :email, 'is invalid'
       end
     end
   end
