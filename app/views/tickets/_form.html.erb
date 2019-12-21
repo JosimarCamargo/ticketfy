@@ -23,7 +23,12 @@
 
   <div class="field">
     <%= form.label :status %>
-    <%= form.text_field :status %>
+    <%= form.select(:status, options_for_select(Ticket.statuses, ticket.status_before_type_cast))%>
+  </div>
+
+  <div class="field">
+    <%= form.label :requester %>
+    <%= form.select(:requester_id, options_from_collection_for_select(@users, 'id', 'email', ticket.requester_id), include_blank: true )%>
   </div>
 
   <div class="actions">

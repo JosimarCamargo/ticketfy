@@ -46,10 +46,11 @@ RSpec.describe 'Tickets Management' do
   end
 
   describe 'POST /tickets' do
+    let(:user) { create(:user) }
     subject { post '/tickets/', params: { ticket: ticket_params } }
 
     context 'with valid parameters' do
-      let(:ticket_params) { attributes_for(:ticket) }
+      let(:ticket_params) { attributes_for(:ticket).merge(requester_id: user.id) }
 
       it_behaves_like 'successfully_created', Ticket
     end
@@ -95,7 +96,7 @@ RSpec.describe 'Tickets Management' do
     context 'with valid parameters' do
       let(:new_attributes) { attributes_for(:ticket) }
 
-      it_behaves_like 'successfully_updated', Ticket
+      it_behaves_like 'successfully_updated', Ticket, 'requester_id'
     end
 
     context 'with invalid parameters' do

@@ -86,7 +86,7 @@ RSpec.describe 'Users Management' do
     context 'with valid parameters' do
       let(:new_attributes) { { email: attributes_for(:user)[:email] } }
 
-      it_behaves_like 'successfully_updated', User
+      it_behaves_like 'successfully_updated', User, 'encrypted_password'
     end
 
     context 'with invalid parameters' do
