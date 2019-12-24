@@ -6,7 +6,9 @@ require_relative 'shared/invalid_with_message'
 RSpec.describe Ticket, type: :model do
   subject { described_class.new(ticket_params) }
   describe '#valid? ' do
+    let(:requester) { create(:user) }
     context 'With all required parameters' do
+      subject { requester.tickets.build(ticket_params) }
       let(:ticket_params) { attributes_for(:ticket) }
       it { is_expected.to be_valid }
     end
@@ -25,6 +27,11 @@ RSpec.describe Ticket, type: :model do
       context 'without status' do
         let(:ticket_params) { attributes_for(:ticket).except(:status) }
         it_behaves_like 'invalid_with_message', :status, "can't be blank"
+      end
+
+      context 'without requester' do
+        let(:ticket_params) { attributes_for(:ticket) }
+        it_behaves_like 'invalid_with_messages', :requester, ['must exist', "can't be blank"]
       end
     end
   end

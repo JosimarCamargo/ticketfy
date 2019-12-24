@@ -2,6 +2,7 @@
 
 class TicketsController < ApplicationController
   before_action :set_ticket, only: %i[show edit update destroy]
+  before_action :load_users, only: %i[edit update new create]
 
   # GET /tickets
   def index
@@ -52,8 +53,11 @@ class TicketsController < ApplicationController
       redirect_to tickets_url, notice: 'Ticket not found.'
     end
 
+    def load_users
+      @users = User.all
+    end
+
     def ticket_params
-      params[:ticket][:status] = params.dig(:ticket, :status).to_i
-      params.require(:ticket).permit(:title, :content, :status)
+      params.require(:ticket).permit(:title, :content, :status, :requester_id)
     end
 end
