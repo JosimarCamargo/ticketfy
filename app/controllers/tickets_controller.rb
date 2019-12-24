@@ -58,7 +58,6 @@ class TicketsController < ApplicationController
     end
 
     def ticket_params
-      params[:ticket][:status] = params.dig(:ticket, :status).to_i
       params.require(:ticket).permit(:title, :content, :status, :requester_id)
     end
 end
