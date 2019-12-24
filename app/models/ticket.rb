@@ -5,7 +5,7 @@ class Ticket < ApplicationRecord
   belongs_to :requester, class_name: 'User', foreign_key: :requester_id, inverse_of: :tickets
 
   validates :requester, presence: true
-  validates :status, presence: true
+  validates :status, presence: true, inclusion: { in: statuses.keys }
   validates :title, presence: true
   validates :content, presence: true
 
