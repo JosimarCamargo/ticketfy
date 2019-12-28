@@ -18,3 +18,18 @@ RSpec.describe 'Ticket creating', type: :feature do
     expect(page).to have_content('Ticket was successfully created.')
   end
 end
+
+RSpec.describe 'Ticket is assigned to an user', type: :feature do
+  let(:user) { create(:user) }
+  let!(:user_assigned) { create(:user) }
+  let(:ticket) { create(:ticket, user_assigned: nil) }
+
+  scenario 'valid inputs' do
+    sign_in(user)
+    visit edit_ticket_path(ticket)
+    select user_assigned.email, from: 'ticket_user_assigned_id'
+    click_on 'Update Ticket'
+    expect(page).to have_content('Ticket was successfully updated.')
+    expect(page).to have_content("Assigned to: #{user_assigned.email}")
+  end
+end
