@@ -289,7 +289,7 @@ Performance/UnfreezeString:
 
 Metrics/LineLength:
   Enabled: true
-  Max: 100
+  Max: 120
 
 Metrics/BlockLength:
   Enabled: true

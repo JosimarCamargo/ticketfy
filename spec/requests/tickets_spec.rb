@@ -106,7 +106,7 @@ RSpec.describe 'Tickets Management' do
       end
 
       context 'when the user assigned is removed' do
-        let(:new_attributes) { {user_assigned_id: nil} }
+        let(:new_attributes) { { user_assigned_id: nil } }
         it_behaves_like 'successfully_updated', Ticket, Ticket.new.attributes.except('user_assigned_id').keys
       end
     end
