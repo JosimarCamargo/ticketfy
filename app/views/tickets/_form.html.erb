@@ -23,7 +23,7 @@
 
   <div class="field">
     <%= form.label :status %>
-    <%= form.select(:status, options_for_select(Ticket.statuses, ticket.status_before_type_cast))%>
+    <%= form.select(:status, options_for_select(Ticket.statuses.keys, ticket.status))%>
   </div>
 
   <div class="field">

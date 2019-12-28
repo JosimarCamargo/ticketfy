@@ -8,8 +8,4 @@ class Ticket < ApplicationRecord
   validates :status, presence: true, inclusion: { in: statuses.keys }
   validates :title, presence: true
   validates :content, presence: true
-
-  def status=(value)
-    super(value.to_i)
-  end
 end
