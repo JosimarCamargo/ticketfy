@@ -20,5 +20,15 @@
   <%= @ticket.status %>
 </p>
 
+<p>
+  <strong>Requester:</strong>
+  <%= @ticket.requester.email %>
+</p>
+
+<p>
+  <strong>Assigned to:</strong>
+  <%= @ticket.user_assigned&.email %>
+</p>
+
 <%= link_to 'Edit', edit_ticket_path(@ticket) %> |
 <%= link_to 'Back', tickets_path %>

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Ticket creating', type: :feature do
-  let(:user) { create_list(:user, 2).first }
+  let(:user) { create_list(:user, 3).first }
   let(:ticket_params) { attributes_for(:ticket) }
 
   scenario 'valid inputs' do
@@ -12,7 +12,8 @@ RSpec.describe 'Ticket creating', type: :feature do
     fill_in 'Title', with: ticket_params[:title]
     fill_in 'Content', with: ticket_params[:content]
     select Ticket.statuses.keys[1], from: 'Status'
-    select User.last.email, from: 'ticket_requester_id'
+    select User.second.email, from: 'ticket_requester_id'
+    select User.last.email, from: 'ticket_user_assigned_id'
     click_on 'Create Ticket'
     expect(page).to have_content('Ticket was successfully created.')
   end

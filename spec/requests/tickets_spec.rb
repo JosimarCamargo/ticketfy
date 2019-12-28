@@ -10,6 +10,8 @@ require_relative 'shared/contexts'
 RSpec.describe 'Tickets Management' do
   include_context 'do_login_first'
 
+  let(:user) { create(:user) }
+
   describe 'GET /tickets' do
     let!(:resource) { create_list(:ticket, 5).first }
 
@@ -46,13 +48,17 @@ RSpec.describe 'Tickets Management' do
   end
 
   describe 'POST /tickets' do
-    let(:user) { create(:user) }
     subject { post '/tickets/', params: { ticket: ticket_params } }
 
     context 'with valid parameters' do
-      let(:ticket_params) { attributes_for(:ticket).merge(requester_id: user.id) }
+      let(:ticket_params) { attributes_for(:ticket).merge(requester_id: user.id, user_assigned_id: user.id) }
 
       it_behaves_like 'successfully_created', Ticket
+
+      it 'has all the attributes' do
+        subject
+        expect(Ticket.first).to have_attributes(ticket_params)
+      end
     end
 
     context 'with invalid parameters' do
@@ -94,9 +100,15 @@ RSpec.describe 'Tickets Management' do
     end
 
     context 'with valid parameters' do
-      let(:new_attributes) { attributes_for(:ticket) }
+      context 'with all parameters' do
+        let(:new_attributes) { attributes_for(:ticket).merge(requester_id: user.id, user_assigned_id: user.id) }
+        it_behaves_like 'successfully_updated', Ticket
+      end
 
-      it_behaves_like 'successfully_updated', Ticket, 'requester_id'
+      context 'when the user assigned is removed' do
+        let(:new_attributes) { {user_assigned_id: nil} }
+        it_behaves_like 'successfully_updated', Ticket, Ticket.new.attributes.except('user_assigned_id').keys
+      end
     end
 
     context 'with invalid parameters' do
