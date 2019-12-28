@@ -6,5 +6,6 @@ FactoryBot.define do
     content { Faker::Lorem.paragraph(sentence_count: 2) }
     status { 'working' }
     association :requester, factory: :user
+    association :user_assigned, factory: :user
   end
 end
