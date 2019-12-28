@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  # rubocop:disable Rails/HasManyOrHasOneDependent
-  has_many :tickets, foreign_key: :requester_id, inverse_of: :requester
-  # rubocop:enable Rails/HasManyOrHasOneDependent
+  has_many :tickets, foreign_key: :requester_id, inverse_of: :requester, dependent: :nullify
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   # :registerable,
