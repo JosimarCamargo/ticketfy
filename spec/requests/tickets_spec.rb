@@ -23,7 +23,7 @@ RSpec.describe 'Tickets Management' do
   end
 
   describe 'GET /tickets/:id' do
-    let!(:resource) { create(:ticket) }
+    let!(:resource) { create(:ticket_with_replies) }
 
     before do
       get "/tickets/#{resource_id}"
@@ -35,6 +35,10 @@ RSpec.describe 'Tickets Management' do
 
       it 'shows ticket body' do
         expect(response.body).to include(resource.content)
+      end
+
+      it "shows the ticket's replies body" do
+        expect(response.body).to include(resource.replies.first.content)
       end
     end
 

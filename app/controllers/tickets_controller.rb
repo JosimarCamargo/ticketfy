@@ -2,7 +2,6 @@
 
 class TicketsController < ApplicationController
   before_action :set_ticket, only: %i[show edit update destroy]
-  before_action :load_users, only: %i[edit update new create]
 
   # GET /tickets
   def index
@@ -51,10 +50,6 @@ class TicketsController < ApplicationController
     rescue ActiveRecord::RecordNotFound
       # TODO: dry this rescue across controllers
       redirect_to tickets_url, notice: 'Ticket not found.'
-    end
-
-    def load_users
-      @users = User.all
     end
 
     def ticket_params
