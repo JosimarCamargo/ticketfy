@@ -1,0 +1,4 @@
+<h4><%= reply.user.email %> said:</h4>
+<%= simple_format reply.content %>
+Sent <%= time_ago_in_words reply.created_at %> ago
+<%= link_to "Destroy" , replies_path(reply), method: :delete, data: { confirm: "Are you sure?" } %>

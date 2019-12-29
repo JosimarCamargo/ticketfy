@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_28_005855) do
+ActiveRecord::Schema.define(version: 2019_12_28_154433) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "replies", force: :cascade do |t|
+    t.bigint "ticket_id"
+    t.text "content"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ticket_id"], name: "index_replies_on_ticket_id"
+    t.index ["user_id"], name: "index_replies_on_user_id"
+  end
 
   create_table "tickets", force: :cascade do |t|
     t.string "title"
@@ -44,6 +54,8 @@ ActiveRecord::Schema.define(version: 2019_12_28_005855) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "replies", "tickets"
+  add_foreign_key "replies", "users"
   add_foreign_key "tickets", "users", column: "requester_id"
   add_foreign_key "tickets", "users", column: "user_assigned_id"
 end
