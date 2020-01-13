@@ -13,12 +13,49 @@ RSpec.describe 'Tickets Management' do
   let(:user) { create(:user) }
 
   describe 'GET /tickets' do
-    let!(:resource) { create_list(:ticket, 5).first }
+    let!(:resource) { create_list(:ticket, 15).last }
 
-    before { get '/tickets' }
+    context 'when listing with valid parameters' do
+      before { get '/tickets' }
 
-    context 'with valid parameters' do
       it_behaves_like 'success_with_resource', %i[title content]
+    end
+
+    context 'when searching' do
+      before { get '/tickets', params: { search: search_params } }
+
+      context 'when found' do
+        let(:search_params) do
+          {
+            id: resource.id,
+            title: resource.title,
+            content: resource.content,
+            requester_email: resource.requester.email,
+            user_assigned_email: resource.user_assigned.email
+          }
+        end
+        it_behaves_like 'success_with_resource', %i[title content id]
+      end
+
+      context 'when nothing is found' do
+        let(:search_params) do
+          {
+            id: '123321',
+            title: '123321',
+            content: '123321',
+            requester_email: '123321',
+            user_assigned_email: '123321'
+          }
+        end
+
+        it 'returns 200' do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it "doesn't includes at response the resource id" do
+          expect(response.body).not_to include(resource.id.to_s)
+        end
+      end
     end
   end
 

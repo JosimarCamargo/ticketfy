@@ -5,7 +5,7 @@ class TicketsController < ApplicationController
 
   # GET /tickets
   def index
-    @tickets = Ticket.all
+    @tickets = TicketFilterService.call(search_params[:search])
   end
 
   # GET /tickets/1
@@ -54,5 +54,9 @@ class TicketsController < ApplicationController
 
     def ticket_params
       params.require(:ticket).permit(:title, :content, :status, :requester_id, :user_assigned_id)
+    end
+
+    def search_params
+      params.permit(search: %i[title content status id requester_email user_assigned_email])
     end
 end

@@ -1,0 +1,43 @@
+<%= form_with(scope: :search, method: :get, local: true) do |form| %>
+
+  <div class="field">
+    <%= form.label :title %>
+    <%= form.text_field :title, value: params.dig(:search, :title) %>
+  </div>
+
+  <div class="field">
+    <%= form.label :content %>
+    <%= form.text_area :content, value: params.dig(:search, :title) %>
+  </div>
+
+  <div class="field">
+    <%= form.label :status %>
+    <%= form.select(
+      :status,
+      options_for_select(Ticket.statuses.keys, params.dig(:search, :status)),
+      include_blank: true
+    )%>
+  </div>
+
+  <div class="field">
+    <%= form.label :requester %>
+    <%= form.select(
+      :requester_email,
+      options_from_collection_for_select(users_all, :email, :email, params.dig(:search, :requester_email)),
+      include_blank: true
+    )%>
+  </div>
+
+    <div class="field">
+    <%= form.label :user_assigned %>
+    <%= form.select(
+      :user_assigned_email,
+      options_from_collection_for_select(users_all, :email, :email, params.dig(:search, :user_assigned_email)),
+      include_blank: true
+    )%>
+  </div>
+
+  <div class="actions">
+    <%= form.submit('Search') %>
+  </div>
+<% end %>
