@@ -1,31 +1,74 @@
 # frozen_string_literal: true
 
 class TicketFilterService
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-  def self.call(filter_params = {})
-    query = Ticket
-    return query.all if filter_params.blank?
+  attr_reader :filter_params
+  delegate :title, :content, :status, :id, :requester_email, :user_assigned_email,
+           to: :filter_params
 
-    query = query.where('title ILIKE ?', filter_params[:title])       if filter_params[:title].present?
-    query = query.where('content ILIKE ?', filter_params[:content])   if filter_params[:content].present?
-    query = query.where(status: filter_params[:status])               if filter_params[:status].present?
-    query = query.where('tickets.id::TEXT LIKE ?', "%#{filter_params[:id]}%") if filter_params[:id].present?
-    # rubocop:disable Lint/UselessAssignment
-    query =
-      if filter_params[:requester_email].present? && filter_params[:user_assigned_email].present?
-        query.joins(:requester).joins(:user_assigned)
-             .where(
-               'users.email = ? OR users.email = ?',
-               filter_params[:requester_email],
-               filter_params[:user_assigned_email]
-             )
-      elsif filter_params[:requester_email].present? && filter_params[:user_assigned_email].blank?
-        query.joins(:requester).where(users: { email: filter_params[:requester_email] })
-      elsif filter_params[:requester_email].blank? && filter_params[:user_assigned_email].present?
-        query.joins(:user_assigned).where(users: { email: filter_params[:user_assigned_email] })
-      else
-        query.all
-      end
+  def self.call(filter_params = {})
+    new(filter_params).call
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity, Lint/UselessAssignment
+
+  def initialize(filter_params)
+    @query = Ticket
+    @filter_params = OpenStruct.new(filter_params)
+  end
+
+  def call
+    @query = search_by_title
+    @query = search_by_content
+    @query = search_by_status
+    @query = search_by_id
+    @query = search_by_user_email
+    @query.all
+  end
+
+  def search_by_user_email
+    if search_by_user_assigned_email?
+      @query.joins(:user_assigned).where(users: { email: user_assigned_email })
+    elsif search_by_requester_email?
+      @query.joins(:requester).where(users: { email: requester_email })
+    elsif search_by_requester_email_or_search_by_user_assigned_email?
+      @query.joins(:requester).joins(:user_assigned)
+            .where('users.email = ? OR users.email = ?', requester_email, user_assigned_email)
+    else
+      @query
+    end
+  end
+
+  def search_by_title
+    return @query if title.nil?
+
+    @query.where('title ILIKE ?', title)
+  end
+
+  def search_by_content
+    return @query if content.nil?
+
+    @query.where('content ILIKE ?', content)
+  end
+
+  def search_by_status
+    return @query if status.nil?
+
+    @query.where(status: status)
+  end
+
+  def search_by_id
+    return @query if id.nil?
+
+    @query.where('tickets.id::TEXT LIKE ?', "%#{id}%")
+  end
+
+  def search_by_user_assigned_email?
+    requester_email.nil? && user_assigned_email.present?
+  end
+
+  def search_by_requester_email?
+    requester_email.present? && user_assigned_email.nil?
+  end
+
+  def search_by_requester_email_or_search_by_user_assigned_email?
+    requester_email.present? && user_assigned_email.present?
+  end
 end
