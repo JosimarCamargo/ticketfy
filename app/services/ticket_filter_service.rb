@@ -14,36 +14,39 @@ class TicketFilterService
   end
 
   def call
-    query = Ticket.search_by_title(title)
-                   .search_by_content(content)
-                   .search_by_status(status)
-                   .search_by_id(id)
-    query = search_by_user_email(query)
+    query = Ticket.filter_by_title(title)
+                  .filter_by_content(content)
+                  .filter_by_status(status)
+                  .filter_by_id(id)
+    query = filter_by_email_related(query)
     query.all
   end
 
-  def search_by_user_email(query)
-    if search_by_user_assigned_email?
-      query.joins(:user_assigned).where(users: { email: user_assigned_email })
-    elsif search_by_requester_email?
-      query.joins(:requester).where(users: { email: requester_email })
-    elsif search_by_requester_email_or_search_by_user_assigned_email?
-      query.joins(:requester).joins(:user_assigned)
-            .where('users.email = ? OR users.email = ?', requester_email, user_assigned_email)
-    else
-      query
+  def filter_by_email_related(query)
+    return query if emails_blank?
+
+    if filter_by_user_assigned_email?
+      query.merge(Ticket.filter_by_user_assigned_email(user_assigned_email))
+    elsif filter_by_requester_email?
+      query.merge(Ticket.filter_by_requester_email(requester_email))
+    elsif filter_by_requester_email_or_filter_by_user_assigned_email?
+      query.merge(Ticket.filter_by_email_related(requester_email, user_assigned_email))
     end
   end
 
-  def search_by_user_assigned_email?
-    requester_email.nil? && user_assigned_email.present?
+  def filter_by_user_assigned_email?
+    requester_email.blank? && user_assigned_email.present?
   end
 
-  def search_by_requester_email?
-    requester_email.present? && user_assigned_email.nil?
+  def filter_by_requester_email?
+    requester_email.present? && user_assigned_email.blank?
   end
 
-  def search_by_requester_email_or_search_by_user_assigned_email?
+  def filter_by_requester_email_or_filter_by_user_assigned_email?
     requester_email.present? && user_assigned_email.present?
+  end
+
+  def emails_blank?
+    requester_email.blank? && user_assigned_email.blank?
   end
 end

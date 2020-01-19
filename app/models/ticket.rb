@@ -11,8 +11,23 @@ class Ticket < ApplicationRecord
   validates :title, presence: true
   validates :content, presence: true
 
-  scope :search_by_title, ->(title_param) { where('title ILIKE ?', title_param) if title_param }
-  scope :search_by_content, ->(content_param) { where('content ILIKE ?', content_param) if content_param }
-  scope :search_by_status, ->(status_param) { where(status: status_param) if status_param }
-  scope :search_by_id, ->(id_param) { where('tickets.id::TEXT LIKE ?', "%#{id_param}%") if id_param }
+  scope :filter_by_title, ->(title_param) { where('title ILIKE ?', title_param) if title_param.present? }
+  scope :filter_by_content, ->(content_param) { where('content ILIKE ?', content_param) if content_param.present? }
+  scope :filter_by_status, ->(status_param) { where(status: status_param) if status_param.present? }
+  scope :filter_by_id, ->(id_param) { where('tickets.id::TEXT LIKE ?', "%#{id_param}%") if id_param.present? }
+  scope :filter_by_user_assigned_email, lambda { |user_assigned_email_param|
+                                          if user_assigned_email_param.present?
+                                            joins(:user_assigned).where(users: { email: user_assigned_email_param })
+                                          end
+                                        }
+  scope :filter_by_requester_email, lambda { |requester_email_param|
+                                      if requester_email_param.present?
+                                        joins(:requester).where(users: { email: requester_email_param })
+                                      end
+                                    }
+  scope :filter_by_email_related, lambda { |requester_email, user_assigned_email|
+                                    joins(:requester)
+                                      .joins(:user_assigned)
+                                      .where('users.email = ? OR users.email = ?', requester_email, user_assigned_email)
+                                  }
 end

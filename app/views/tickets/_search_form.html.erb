@@ -1,6 +1,11 @@
 <%= form_with(scope: :search, method: :get, local: true) do |form| %>
 
   <div class="field">
+    <%= form.label :id %>
+    <%= form.text_field :id, value: params.dig(:search, :id) %>
+  </div>
+
+  <div class="field">
     <%= form.label :title %>
     <%= form.text_field :title, value: params.dig(:search, :title) %>
   </div>

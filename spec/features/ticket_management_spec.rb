@@ -56,6 +56,7 @@ RSpec.describe 'Ticket is searched', type: :feature do
     sign_in(user)
     visit tickets_path(form_search: true)
     fill_in 'Title', with: ticket.title
+    fill_in 'Id', with: ticket.id
     fill_in 'Content', with: ticket.content
     select Ticket.statuses.keys[1], from: 'Status'
     select ticket.requester.email, from: 'search_requester_email'
