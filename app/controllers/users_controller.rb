@@ -5,7 +5,7 @@ class UsersController < ApplicationController
 
   # GET /users
   def index
-    @users = User.all
+    @pagy, @users = pagy(User.all)
   end
 
   # GET /users/1

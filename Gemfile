@@ -9,6 +9,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'devise', '>= 4.7.1'
 gem 'dotenv-rails', '~> 2.7', '>= 2.7.1'
 gem 'jbuilder', '~> 2.5'
+gem 'pagy', '~> 3.5'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.12'
 gem 'rails', '~> 5.2.2', '>= 5.2.2.1'

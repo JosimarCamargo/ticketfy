@@ -50,7 +50,7 @@ end
 
 RSpec.describe 'Ticket is searched', type: :feature do
   let(:user) { create(:user) }
-  let!(:ticket) { create_list(:ticket, 2).first }
+  let!(:ticket) { create_list(:ticket, 21).first }
 
   scenario 'valid inputs' do
     sign_in(user)
@@ -62,8 +62,28 @@ RSpec.describe 'Ticket is searched', type: :feature do
     select ticket.requester.email, from: 'search_requester_email'
     select ticket.user_assigned.email, from: 'search_user_assigned_email'
     click_on 'Search'
+    expect(page).to have_content('‹ Prev 1 Next ›')
     expect(page).to have_content(ticket.title)
     expect(page).to have_content(ticket.content)
     expect(page).to have_content(ticket.id)
+  end
+end
+
+RSpec.describe 'Ticket is listed and paginated', type: :feature do
+  let(:user) { create(:user) }
+  let!(:ticket) { create_list(:ticket, 21).first }
+
+  scenario 'valid inputs' do
+    sign_in(user)
+    visit tickets_path
+    expect(page).to have_content(ticket.title)
+    expect(page).to have_content(ticket.content)
+    expect(page).to have_content(ticket.id)
+    expect(page).to have_content('‹ Prev 1 2 Next ›')
+    click_on 'Next'
+
+    # Next Page
+    expect(page).not_to have_content(ticket.id)
+    expect(page).to have_content(Ticket.last.id)
   end
 end
