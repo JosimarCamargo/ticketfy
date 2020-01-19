@@ -25,4 +25,19 @@ RSpec.describe 'Users Management', type: :feature do
       expect(page).to have_content('You need to sign in or sign up before continuing.')
     end
   end
+
+  feature 'Users are listed and paginate' do
+    let!(:user_2) { create_list(:user, 21).first }
+    scenario 'success' do
+      sign_in(user)
+      visit users_path
+      expect(page).to have_content(user_2.email)
+      expect(page).to have_content('‹ Prev 1 2 Next ›')
+      click_on 'Next'
+
+      # Next Page
+      expect(page).not_to have_content(user_2.email)
+      expect(page).to have_content(User.last.email)
+    end
+  end
 end

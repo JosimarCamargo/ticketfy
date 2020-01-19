@@ -18,8 +18,7 @@ class TicketFilterService
                   .filter_by_content(content)
                   .filter_by_status(status)
                   .filter_by_id(id)
-    query = filter_by_email_related(query)
-    query.all
+    filter_by_email_related(query)
   end
 
   def filter_by_email_related(query)

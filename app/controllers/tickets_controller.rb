@@ -5,7 +5,7 @@ class TicketsController < ApplicationController
 
   # GET /tickets
   def index
-    @tickets = TicketFilterService.call(search_params[:search])
+    @pagy, @tickets = pagy(TicketFilterService.call(search_params[:search]))
   end
 
   # GET /tickets/1
