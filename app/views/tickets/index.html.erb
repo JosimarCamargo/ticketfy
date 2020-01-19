@@ -1,5 +1,9 @@
 <h1>Tickets</h1>
 
+<% if params[:search] || params[:form_search] %>
+  <%= render 'search_form', ticket: Ticket.new %>
+<% end %>
+
 <table>
   <thead>
     <tr>

@@ -47,3 +47,23 @@ RSpec.describe 'User adds a reply to ticket', type: :feature do
     expect(page).to have_content(reply_content)
   end
 end
+
+RSpec.describe 'Ticket is searched', type: :feature do
+  let(:user) { create(:user) }
+  let!(:ticket) { create_list(:ticket, 2).first }
+
+  scenario 'valid inputs' do
+    sign_in(user)
+    visit tickets_path(form_search: true)
+    fill_in 'Title', with: ticket.title
+    fill_in 'Id', with: ticket.id
+    fill_in 'Content', with: ticket.content
+    select Ticket.statuses.keys[1], from: 'Status'
+    select ticket.requester.email, from: 'search_requester_email'
+    select ticket.user_assigned.email, from: 'search_user_assigned_email'
+    click_on 'Search'
+    expect(page).to have_content(ticket.title)
+    expect(page).to have_content(ticket.content)
+    expect(page).to have_content(ticket.id)
+  end
+end
