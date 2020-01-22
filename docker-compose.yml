@@ -1,6 +1,14 @@
 version: '3'
 
 services:
+  web:
+    build: .
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/application
+    links:
+      - db
   db:
     image: postgres:9.6-alpine
     ports:
