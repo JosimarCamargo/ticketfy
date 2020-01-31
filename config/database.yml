@@ -1,5 +1,4 @@
 default: &default
-  database: <%= ENV['DATABASE_NAME'] %>
   username: <%= ENV['DATABASE_USER'] %>
   password: <%= ENV['DATABASE_PASSWORD'] %>
   host: <%= ENV['DATABASE_HOST'] %>
@@ -9,7 +8,7 @@ default: &default
 
 development:
   <<: *default
-
+  database: ticketfy_dev
 test:
   <<: *default
   database: ticketfy_test
