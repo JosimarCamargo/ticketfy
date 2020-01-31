@@ -1,0 +1,12 @@
+config/master.key
+.semaphore-cache
+docker-compose*
+Dockerfile*
+README.md
+.dockerignore
+tmp/
+.git
+log/*log
+.vscode/
+node_modules/
+.env.production

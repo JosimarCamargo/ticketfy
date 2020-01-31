@@ -1,0 +1,12 @@
+FROM ruby:2.6.1-alpine3.9
+
+RUN apk add --no-cache --update build-base \
+  linux-headers \
+  git \
+  postgresql-dev \
+  nodejs \
+  yarn \
+  curl \
+  tzdata
+
+RUN gem install bundler:2.0.2
