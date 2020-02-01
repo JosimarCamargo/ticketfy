@@ -5,7 +5,13 @@ services:
     build: .
     environment:
       RAILS_ENV: ${RAILS_ENV}
+    ports:
+      - 3000:3000
+    volumes:
+      - .:/application
     links:
+      - db
+    depends_on:
       - db
   db:
     image: postgres:9.6-alpine

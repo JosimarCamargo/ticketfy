@@ -6,7 +6,7 @@ WORKDIR /application
 
 COPY . .
 
-# install not cached gems and clean temporary gem extensions written in C
+# install not cached gems and clean the gem cache
 RUN bundle install --path=/vendor/bundler --deployment --jobs 4 --retry 3 \
   && rm -rf /gems/cache/*.gem
 

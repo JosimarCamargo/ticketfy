@@ -28,3 +28,6 @@
 
 # SimpleCov Report file
 coverage
+
+# override local envs
+.env*.local
