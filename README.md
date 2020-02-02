@@ -44,21 +44,22 @@ Work in progress..
 
 Building base image, this is usually done by docker hub, when there are changes on branch master.
 
-`docker build -t josimarcamargo/ticketfy:base . -f DockerfileBase --no-cache`
+`docker build -t josimarcamargo/ticketfy:base . -f docker/DockerfileBase --no-cache`
 
 
 Building gem_cache image, this is usually done by docker hub, when there are changes on branch master
 
-`docker build -t josimarcamargo/ticketfy:gem_cache . -f DockerfileGemCache --no-cache`
+`docker build -t josimarcamargo/ticketfy:gem_cache . -f docker/DockerfileGemCache --no-cache`
+
 
 Building production localmente, this is usually done by CI when there is changes on branch release/beta
 
-`docker build  --build-arg RAILS_MASTER_KEY=$RAILS_MASTER_KEY --build-arg RAILS_ENV=production -t josimarcamargo/ticketfy:beta . -f Dockerfile --no-cache`
+`docker build  --build-arg RAILS_MASTER_KEY=$RAILS_MASTER_KEY --build-arg RAILS_ENV=production -t josimarcamargo/ticketfy:beta . -f docker/Dockerfile --no-cache`
 
 
 Building release image, this is usually done by CI, this image used only by heroku to run deploy tasks like: rake db:migrate and etc
 
-`docker build  --build-arg RAILS_MASTER_KEY=$RAILS_MASTER_KEY --build-arg RAILS_ENV=production -t registry.heroku.com/ticketfy-beta/release . -f DockerfileReleaseHeroku --no-cache`
+`docker build  --build-arg RAILS_MASTER_KEY=$RAILS_MASTER_KEY --build-arg RAILS_ENV=production -t registry.heroku.com/ticketfy-beta/release . -f docker/DockerfileReleaseHeroku --no-cache`
 
 
 Setting heroku tag: web
