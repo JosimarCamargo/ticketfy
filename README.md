@@ -24,15 +24,25 @@ Things you may want to cover:
 * Database initialization
 
 ## How to run the test suite and linters
-`RAILS_ENV=test docker-compose up -d`
+`docker-compose -f docker/docker-compose-test.yml up -d --build`
 
 ### Running linters
 `docker-compose exec web bundle exec rubocop`
 `docker-compose exec web bundle exec brakeman --no-pager`
+`docker-compose exec web bundle exec rake factory_bot:lint`
 
 ### Running tests
+When there is an update on DockerfileBaseTest is required to build the base test image, usually you can get one from the project on docker hub https://hub.docker.com/r/josimarcamargo/ticketfy
+
+`docker build -t josimarcamargo/ticketfy:base_test . -f docker/DockerfileBaseTest --no-cache`
+
+Without docker compose
+`docker build -t josimarcamargo/ticketfy:test . -f docker/DockerfileTest --no-cache`
+
+With docker compose
+`docker-compose -f docker-compose-test.yml up -d --build`
 `docker-compose exec web rake db:setup`
-`docker-compose exec web bundle exec rspec spec/requests spec/models spec/services`
+`docker-compose exec web bundle exec rspec`
 
 ### Stop tests containers
 `docker-compose down`

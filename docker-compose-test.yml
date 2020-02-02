@@ -2,24 +2,20 @@ version: '3'
 
 services:
   web:
+    container_name: web
     build:
       context: .
-      dockerfile: docker/Dockerfile
-    environment:
-      RAILS_ENV: ${RAILS_ENV}
+      dockerfile: docker/DockerfileTest
     ports:
       - 3000:3000
-    volumes:
-      - .:/application
     links:
       - db
     depends_on:
       - db
   db:
+    container_name: db
     image: postgres:9.6-alpine
     environment:
       POSTGRES_PASSWORD:
-    ports:
-      - 5432:5432
     volumes:
       - $HOME/Docker/Volumes/PostgresAlpine9.6:/var/lib/postgresql/data

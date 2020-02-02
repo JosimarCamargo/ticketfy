@@ -1,0 +1,6 @@
+FROM josimarcamargo/ticketfy:base
+
+RUN apk add --no-cache \
+  libc6-compat \
+  chromium \
+  chromium-chromedriver

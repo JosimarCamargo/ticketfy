@@ -10,3 +10,4 @@ log/*log
 .vscode/
 node_modules/
 .env.production
+.env.*.local

@@ -8,10 +8,25 @@ end
 
 require 'spec_helper'
 require 'capybara/rspec'
-require 'webdrivers/chromedriver'
 
-Capybara.default_driver = :selenium_chrome
-Capybara.javascript_driver = :selenium_chrome
+if ENV['DOCKER_MODE']
+  Capybara.register_driver :selenium_chrome_headless_docker_friendly do |app|
+    Capybara::Selenium::Driver.load_selenium
+    browser_options = ::Selenium::WebDriver::Chrome::Options.new
+    browser_options.args << '--headless'
+    browser_options.args << '--disable-gpu'
+    # Sandbox cannot be used inside unprivileged Docker container
+    browser_options.args << '--no-sandbox'
+    Capybara::Selenium::Driver.new(app, browser: :chrome, options: browser_options)
+  end
+
+  Capybara.default_driver = :selenium_chrome_headless_docker_friendly
+  Capybara.javascript_driver = :selenium_chrome_headless_docker_friendly
+else
+  require 'webdrivers/chromedriver'
+  Capybara.default_driver = :selenium_chrome_headless
+  Capybara.javascript_driver = :selenium_chrome_headless
+end
 
 ENV['RAILS_ENV'] ||= 'test'
 require File.expand_path('../config/environment', __dir__)

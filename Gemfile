@@ -30,7 +30,7 @@ group :test do
   gem 'capybara', '~> 3.28'
   gem 'faker', git: 'https://github.com/faker-ruby/faker.git', branch: 'master'
   gem 'simplecov', '~> 0.17.1', require: false
-  gem 'webdrivers', '~> 4.0'
+  gem 'webdrivers', '~> 4.0', require: false
 end
 
 group :development do
