@@ -44,6 +44,15 @@ With docker compose
 `docker-compose exec web rake db:setup`
 `docker-compose exec web bundle exec rspec`
 
+### Debugging the app inside the container
+When you attach the your terminal with the app, will be possible interact with the application using breaking points like binding.pry
+To attach the terminal to the app container use:
+`docker attach $(docker-compose ps -q app)`
+
+
+You can also build, up and attach in one line
+`dc up --build -d && docker attach $(docker-compose ps -q app)`
+
 ### Stop tests containers
 `docker-compose down`
 

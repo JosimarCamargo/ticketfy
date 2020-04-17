@@ -1,25 +1,45 @@
 version: '3'
 
 services:
-  web:
+  app: &app
     build:
       context: .
-      dockerfile: docker/Dockerfile
-    environment:
-      RAILS_ENV: ${RAILS_ENV}
-    ports:
-      - 3000:3000
+      dockerfile: ./docker/Dockerfile
+    tmpfs:
+      - /tmp
+    stdin_open: true
+    tty: true
     volumes:
-      - .:/application
-    links:
-      - db
+      - .:/app
+    environment:
+      - RAILS_ENV=${RAILS_ENV:-development}
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5432
+      - HISTFILE=/app/log/.bash_history
+      - EDITOR=vi
     depends_on:
-      - db
-  db:
-    image: postgres:9.6-alpine
+      - postgres
+    ports:
+      - '3000:3000'
+
+  runner:
+    <<: *app
+    command: /bin/bash
+    ports:
+      - '3001:3001'
+
+  postgres:
+    container_name: postgres
+    image: postgres:11.6-alpine
+    volumes:
+      - postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD:
     ports:
       - 5432:5432
-    volumes:
-      - $HOME/Docker/Volumes/PostgresAlpine9.6:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U postgres -h 127.0.0.1
+      interval: 5s
+
+volumes:
+  postgres:
+

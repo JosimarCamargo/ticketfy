@@ -1,26 +1,23 @@
-FROM josimarcamargo/ticketfy:base
+FROM ruby:2.6.5-alpine3.10
 
-COPY --from=josimarcamargo/ticketfy:gem_cache  /vendor/bundler  /vendor/bundler
+RUN apk add --update build-base linux-headers bash git postgresql-dev \
+  postgresql-client nodejs yarn curl tzdata
 
-WORKDIR /application
+RUN gem install bundler:2.1.4
+
+WORKDIR /app
+
+# takes leverage the docker cache
+COPY Gemfile Gemfile.lock ./
+RUN bundle install --binstubs --jobs 4
 
 COPY . .
 
-# install not cached gems and clean the gem cache
-RUN bundle install --path=/vendor/bundler --deployment --jobs 4 --retry 3 \
-  && rm -rf /gems/cache/*.gem
-
-# redirect the logs stdout in production
+# redirect the logs to stdout
 ENV RAILS_LOG_TO_STDOUT true
-
-ENV RAILS_SERVE_STATIC_FILES true
-
-ARG RAILS_ENV
-
-ARG RAILS_MASTER_KEY
 
 RUN rake assets:precompile
 
-CMD bundle exec rails s -b 0.0.0.0
+CMD puma -C config/puma.rb
 
 EXPOSE 3000
