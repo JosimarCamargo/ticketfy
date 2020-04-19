@@ -27,9 +27,11 @@ Things you may want to cover:
 `docker-compose -f docker/docker-compose-test.yml up -d --build`
 
 ### Running linters
-`docker-compose exec web bundle exec rubocop`
-`docker-compose exec web bundle exec brakeman --no-pager`
-`docker-compose exec web bundle exec rake factory_bot:lint`
+```shell
+docker-compose exec web bundle exec rubocop
+docker-compose exec web bundle exec brakeman --no-pager
+docker-compose exec web bundle exec rake factory_bot:lint
+```
 
 ### Running tests
 When there is an update on DockerfileBaseTest is required to build the base test image, usually you can get one from the project on docker hub https://hub.docker.com/r/josimarcamargo/ticketfy
@@ -40,9 +42,11 @@ Without docker compose
 `docker build -t josimarcamargo/ticketfy:test . -f docker/DockerfileTest --no-cache`
 
 With docker compose
-`docker-compose -f docker-compose-test.yml up -d --build`
-`docker-compose exec web rake db:setup`
-`docker-compose exec web bundle exec rspec`
+```shell
+docker-compose -f docker-compose-test.yml up -d --build
+docker-compose exec web rake db:setup
+docker-compose exec web bundle exec rspec
+```
 
 ### Debugging the app inside the container
 When you attach the your terminal with the app, will be possible interact with the application using breaking points like binding.pry
@@ -87,13 +91,13 @@ Setting heroku tag: web
 
 
 Sending images to heroku container registry
-
-`docker push registry.heroku.com/ticketfy-beta/web`
-`docker push registry.heroku.com/ticketfy-beta/release`
+```shell
+docker push registry.heroku.com/ticketfy-beta/web
+docker push registry.heroku.com/ticketfy-beta/release
+```
 
 
 Sending images to docker hub
-
 `docker push josimarcamargo/ticketfy:beta`
 
 
