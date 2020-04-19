@@ -15,7 +15,6 @@ services:
       - ./docker/.env.test:/app/.env.test
     environment:
       - RAILS_ENV=${RAILS_ENV:-development}
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432
       - HISTFILE=/app/log/.bash_history
       - EDITOR=vi
     depends_on:
@@ -27,7 +26,20 @@ services:
     <<: *app
     command: /bin/bash
     ports:
-      - '3001:3001'
+      - '3001:3000'
+
+  tester:
+    <<: *app
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        environment_packages: libc6-compat chromium chromium-chromedriver
+    command: /bin/bash
+    environment:
+      - RAILS_ENV=${RAILS_ENV:-test}
+    ports:
+      - '3002:3000'
 
   postgres:
     container_name: postgres

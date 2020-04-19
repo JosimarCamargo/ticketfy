@@ -24,13 +24,13 @@ Things you may want to cover:
 * Database initialization
 
 ## How to run the test suite and linters
-`docker-compose -f docker/docker-compose-test.yml up -d --build`
+`docker-compose up -d --build`
 
 ### Running linters
 ```shell
-docker-compose exec web bundle exec rubocop
-docker-compose exec web bundle exec brakeman --no-pager
-docker-compose exec web bundle exec rake factory_bot:lint
+docker-compose exec app rubocop
+docker-compose exec app brakeman --no-pager
+docker-compose exec app rake factory_bot:lint
 ```
 
 ### Running tests
