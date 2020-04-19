@@ -11,6 +11,8 @@ services:
     tty: true
     volumes:
       - .:/app
+      - ./docker/.env.development:/app/.env.development
+      - ./docker/.env.test:/app/.env.test
     environment:
       - RAILS_ENV=${RAILS_ENV:-development}
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432
@@ -42,4 +44,3 @@ services:
 
 volumes:
   postgres:
-
