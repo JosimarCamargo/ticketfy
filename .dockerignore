@@ -1,13 +1,23 @@
+# credentials
 config/master.key
-.semaphore-cache
-docker-compose*
-Dockerfile*
-README.md
-.dockerignore
-tmp/
-.git
-log/*log
-.vscode/
-node_modules/
 .env.production
 .env.*.local
+
+# docker files
+/docker/*
+docker-compose*
+.dockerignore
+
+# unnecessary production files
+README.md
+.git
+.gitignore
+.vscode/
+node_modules/
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+.semaphore-cache
