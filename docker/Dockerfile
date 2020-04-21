@@ -1,6 +1,6 @@
 FROM ruby:2.6.5-alpine3.10
 
-ARG environment_packages
+# ARGS: RAILS_ENV, environment_packages, both are optional
 
 RUN apk add --update build-base linux-headers bash git postgresql-dev \
   postgresql-client nodejs yarn curl tzdata
@@ -16,12 +16,17 @@ RUN bundle install --binstubs --jobs 4
 COPY . .
 
 # used to add packages like chromnium for test enviroment
-RUN apk add $environment_packages
+ARG environment_packages
+# if the variable isn't zero lenght, run the command
+RUN if [ ! -z $environment_packages ]; then apk add $environment_packages; fi;
+
+ARG RAILS_ENV
+ENV RAILS_ENV $RAILS_ENV
 
 # redirect the logs to stdout
 ENV RAILS_LOG_TO_STDOUT true
 
-RUN rake assets:precompile
+RUN if [ RAILS_ENV = 'production' ]; then rake assets:precompile; fi;
 
 CMD rails s -b 0.0.0.0
 
