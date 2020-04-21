@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
+      args:
+        RAILS_ENV: development
     tmpfs:
       - /tmp
     stdin_open: true
@@ -14,9 +16,8 @@ services:
       - ./docker/.env.development:/app/.env.development
       - ./docker/.env.test:/app/.env.test
     environment:
-      - RAILS_ENV=${RAILS_ENV:-development}
-      - HISTFILE=/app/log/.bash_history
-      - EDITOR=vi
+      HISTFILE: /app/log/.bash_history
+      EDITOR: vi
     depends_on:
       - postgres
     ports:
@@ -39,6 +40,8 @@ services:
     command: /bin/bash
     environment:
       DOCKER_MODE: 'true'
+      HISTFILE: /app/log/.bash_history
+      EDITOR: vi
     ports:
       - '3002:3000'
 
