@@ -34,10 +34,11 @@ services:
       context: .
       dockerfile: ./docker/Dockerfile
       args:
+        RAILS_ENV: test
         environment_packages: libc6-compat chromium chromium-chromedriver
     command: /bin/bash
     environment:
-      - RAILS_ENV=${RAILS_ENV:-test}
+      DOCKER_MODE: 'true'
     ports:
       - '3002:3000'
 
