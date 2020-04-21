@@ -23,6 +23,6 @@ ENV RAILS_LOG_TO_STDOUT true
 
 RUN rake assets:precompile
 
-CMD puma -C config/puma.rb
+CMD rails s -b 0.0.0.0
 
 EXPOSE 3000
