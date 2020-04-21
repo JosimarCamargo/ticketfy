@@ -26,11 +26,15 @@ Things you may want to cover:
 ## How to run the test suite and linters
 `docker-compose up -d --build`
 
+# You will first build de the project or get an image with test setup
+building an image and upp the test environment containers:
+`docker-compose up tester -d --build`
+
 ### Running linters
 ```shell
-docker-compose exec app rubocop
-docker-compose exec app brakeman --no-pager
-docker-compose exec app rake factory_bot:lint
+docker-compose exec tester rubocop
+docker-compose exec tester brakeman --no-pager
+docker-compose exec tester rake factory_bot:lint
 ```
 
 ### Running tests
@@ -43,13 +47,16 @@ Without docker compose
 
 With docker compose
 ```shell
-docker-compose -f docker-compose-test.yml up -d --build
-docker-compose exec web rake db:setup
-docker-compose exec web bundle exec rspec
+docker-compose up -d --build
+docker-compose exec tester rake db:setup
+docker-compose exec tester rspec
 ```
 
+### Developing
+`docker-compose up -d --build app'
+
 ### Debugging the app inside the container
-When you attach the your terminal with the app, will be possible interact with the application using breaking points like binding.pry
+When you attach the your terminal with the app, will be possible interact with the application using breaking points like `binding.pry`
 To attach the terminal to the app container use:
 `docker attach $(docker-compose ps -q app)`
 
