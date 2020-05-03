@@ -37,7 +37,7 @@ services:
       dockerfile: ./docker/Dockerfile
       args:
         RAILS_ENV: test
-        environment_packages: libc6-compat chromium chromium-chromedriver
+        ENVIRONMENT_PACKAGES: libc6-compat chromium chromium-chromedriver
     command: /bin/bash
     environment:
       DOCKER_MODE: 'true'
