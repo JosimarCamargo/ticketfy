@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: ./docker/Dockerfile
       args:
+        COMMAND: rails s -b 0.0.0.0
         RAILS_ENV: development
     tmpfs:
       - /tmp
@@ -38,13 +39,40 @@ services:
       args:
         RAILS_ENV: test
         ENVIRONMENT_PACKAGES: libc6-compat chromium chromium-chromedriver
-    command: /bin/bash
     environment:
       DOCKER_MODE: 'true'
       HISTFILE: /app/log/.bash_history
       EDITOR: vi
+    command: /bin/bash
     ports:
       - '3002:3000'
+
+  production:
+    <<: *app
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        RAILS_ENV: production
+        COMMAND: rails s -b 0.0.0.0
+        RAILS_MASTER_KEY: $RAILS_MASTER_KEY # fetch $RAILS_MASTER_KEY from env host
+        RAILS_SERVE_STATIC_FILES: 'true'
+    environment: # those environments variables are not persisted at the build image, this makes easy spin this container in dev, also works as docs
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432 # this makes easy spin this container in dev
+      RAILS_MASTER_KEY: $RAILS_MASTER_KEY # this makes easy spin this container in dev
+    ports:
+      - '3000:3000'
+
+
+  heroku_releaser:
+    <<: *app
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        RAILS_ENV: production
+        RAILS_MASTER_KEY: $RAILS_MASTER_KEY # fetch $RAILS_MASTER_KEY from env host
+        COMMAND: rake db:migrate
 
   postgres:
     container_name: postgres
@@ -53,11 +81,12 @@ services:
       - postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD:
-    ports:
-      - 5432:5432
     healthcheck:
       test: pg_isready -U postgres -h 127.0.0.1
       interval: 5s
+    ports:
+      - 5432:5432
+
 
 volumes:
   postgres:

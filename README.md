@@ -24,11 +24,15 @@ Things you may want to cover:
 * Database initialization
 
 ## How to run the test suite and linters
-`docker-compose up -d --build`
 
-# You will first build de the project or get an image with test setup
-building an image and upp the test environment containers:
-`docker-compose up tester -d --build`
+# You will need first build the project or get an image with test setup
+Images are available at docker hub
+https://hub.docker.com/repository/docker/josimarcamargo/ticketfy
+https://hub.docker.com/repository/docker/josimarcamargo/ticketfy-beta
+
+
+building an image and up the test environment containers:
+`docker-compose up -d --build tester`
 
 ### Running linters
 ```shell
@@ -38,16 +42,7 @@ docker-compose exec tester rake factory_bot:lint
 ```
 
 ### Running tests
-When there is an update on DockerfileBaseTest is required to build the base test image, usually you can get one from the project on docker hub https://hub.docker.com/r/josimarcamargo/ticketfy
-
-`docker build -t josimarcamargo/ticketfy:base_test . -f docker/DockerfileBaseTest --no-cache`
-
-Without docker compose
-`docker build -t josimarcamargo/ticketfy:test . -f docker/DockerfileTest --no-cache`
-
-With docker compose
 ```shell
-docker-compose up -d --build
 docker-compose exec tester rake db:setup
 docker-compose exec tester rspec
 ```
@@ -72,37 +67,30 @@ Work in progress..
 
 ## Deployment instructions
 
-Building base image, this is usually done by docker hub, when there are changes on branch master.
+Building production manually, this is usually done by CI when there is changes on branch master, for production and branch release/number for beta
 
-`docker build -t josimarcamargo/ticketfy:base . -f docker/DockerfileBase --no-cache`
+`docker-compose build production`
 
-
-Building gem_cache image, this is usually done by docker hub, when there are changes on branch master
-
-`docker build -t josimarcamargo/ticketfy:gem_cache . -f docker/DockerfileGemCache --no-cache`
-
-
-Building production localmente, this is usually done by CI when there is changes on branch release/beta
-
-`docker build  --build-arg RAILS_MASTER_KEY=$RAILS_MASTER_KEY --build-arg RAILS_ENV=production -t josimarcamargo/ticketfy:beta . -f docker/Dockerfile --no-cache`
-
+Tag the production image
+`docker tag ticketfy_production:latest registry.heroku.com/ticketfy-beta/web`
 
 Building release image, this is usually done by CI, this image used only by heroku to run deploy tasks like: rake db:migrate and etc
 
-`docker build  --build-arg RAILS_MASTER_KEY=$RAILS_MASTER_KEY --build-arg RAILS_ENV=production -t registry.heroku.com/ticketfy-beta/release . -f docker/DockerfileReleaseHeroku --no-cache`
+`docker-compose build heroku_releaser`
 
-
-Setting heroku tag: web
-
-`docker tag josimarcamargo/ticketfy:beta registry.heroku.com/ticketfy-beta/web`
-
+Tag the Heroku releaser image
+`docker tag ticketfy_heroku_releaser:latest registry.heroku.com/ticketfy-beta/release`
 
 Sending images to heroku container registry
+You will need to be logged first `heroku login`
+´heroku container:login`
 ```shell
 docker push registry.heroku.com/ticketfy-beta/web
 docker push registry.heroku.com/ticketfy-beta/release
 ```
 
+Tag image for docker hub
+`docker tag ticketfy_production:latest josimarcamargo/ticketfy:beta`
 
 Sending images to docker hub
 `docker push josimarcamargo/ticketfy:beta`
@@ -112,7 +100,7 @@ Telling heroku to deploy the new image
 
 with the heroku cli installed: `heroku container:release web release -a ticketfy-beta`
 
-within CI can be done with a docker image, without installing the heroku cli: `docker run --rm -e HEROKU_API_KEY=$HEROKU_API_KEY josimarcamargo/heroku_cli container:release web release -a ticketfy-beta`
+Some CI's has the heroku cli available, if that is not your case, this also can be done with a docker image, without installing the heroku cli: `docker run --rm -e HEROKU_API_KEY=$HEROKU_API_KEY josimarcamargo/heroku_cli container:release web release -a ticketfy-beta`
 
 
 * Default User :
