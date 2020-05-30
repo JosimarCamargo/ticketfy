@@ -16,7 +16,6 @@ services:
       - .:/app
       - rails_cache:/app/tmp/cache # share cache between containers for dev purposes and fix problems with permission when running with root user
       - ./docker/.env.development:/app/.env.development
-      - ./docker/.env.test:/app/.env.test
     environment:
       HISTFILE: /app/log/.bash_history
       EDITOR: vi
@@ -41,6 +40,7 @@ services:
         ENVIRONMENT_PACKAGES: libc6-compat chromium chromium-chromedriver
     environment:
       DOCKER_MODE: 'true'
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432
       HISTFILE: /app/log/.bash_history
       EDITOR: vi
     command: /bin/bash
