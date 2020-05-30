@@ -49,6 +49,7 @@ services:
 
   production:
     <<: *app
+    image: ticketfy_production
     build:
       context: .
       dockerfile: ./docker/Dockerfile
@@ -66,6 +67,7 @@ services:
 
   heroku_releaser:
     <<: *app
+    image: ticketfy_heroku_releaser
     build:
       context: .
       dockerfile: ./docker/Dockerfile
