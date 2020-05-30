@@ -30,9 +30,12 @@ Images are available at docker hub
 https://hub.docker.com/repository/docker/josimarcamargo/ticketfy
 https://hub.docker.com/repository/docker/josimarcamargo/ticketfy-beta
 
-
-building an image and up the test environment containers:
-`docker-compose up -d --build tester`
+### Build and Database setup
+Building an container image and up the test environment containers:
+```shell
+docker-compose up -d --build tester
+docker-compose exec tester rake db:setup
+```
 
 ### Running linters
 ```shell
@@ -43,7 +46,6 @@ docker-compose exec tester rake factory_bot:lint
 
 ### Running tests
 ```shell
-docker-compose exec tester rake db:setup
 docker-compose exec tester rspec
 ```
 
