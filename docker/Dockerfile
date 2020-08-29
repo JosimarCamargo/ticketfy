@@ -9,9 +9,11 @@ RUN gem install bundler:2.1.4
 
 WORKDIR /app
 
-# takes leverage the docker cache
-COPY Gemfile ./
-COPY Gemfile.lock ./
+# takes leverage the docker cache # acho q temos um problema da permissão copiada, pq qndo a imagem é gerado no semaphore, e o segundo build tbem é usado, lá o cache_from funciona direitinho
+# apos resolver isso, tem q ver como passar como flag o cache-from para o dockerfile durante o build
+COPY --chown=root:root Gemfile ./
+COPY --chown=root:root Gemfile.lock ./
+
 RUN bundle install --binstubs --jobs 4
 
 COPY . .
