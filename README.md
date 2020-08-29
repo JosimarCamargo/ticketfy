@@ -48,40 +48,95 @@ docker-compose exec tester rake factory_bot:lint
 ```shell
 docker-compose exec tester rspec
 ```
+[stopping the container](#Stop-containers)
 
 ### Developing
-`docker-compose up -d --build app'
+```shell
+docker-compose up -d --build app
+```
 
 ### Debugging the app inside the container
 When you attach the your terminal with the app, will be possible interact with the application using breaking points like `binding.pry`
 To attach the terminal to the app container use:
-`docker attach $(docker-compose ps -q app)`
-
+```shell
+docker attach $(docker-compose ps -q app)
+```
 
 You can also build, up and attach in one line
-`dc up --build -d && docker attach $(docker-compose ps -q app)`
+```shell
+docker-compose up --build -d && docker attach $(docker-compose ps -q app)
+```
 
-### Stop tests containers
-`docker-compose down`
+### Stop containers
+```shell
+docker-compose down
+```
 
 ## Services (job queues, cache servers, search engines, etc.)
 Work in progress..
 
 ## Deployment instructions
 
-Building production manually, this is usually done by CI when there is changes on branch master, for production and branch release/number for beta
+Building production manually, this is usually done by CI when there is changes on branch master for production and branch release/number for beta, the environment needs to have exported the RAILS_MASTER_KEY
 
-`docker-compose build production`
+```shell
+docker-compose build production
+```
 
-Tag the production image
-`docker tag ticketfy_production:latest registry.heroku.com/ticketfy-beta/web`
+## Tagging the docker image
+This project use the docker tag system as cache to improve the speed build and save some resources
 
-Building release image, this is usually done by CI, this image used only by heroku to run deploy tasks like: rake db:migrate and etc
+# When DEV
+## This is it's used just to share/deploy an image on the early development stages
+You will must have the $BRANCH_NAME without slashes('/') set eg:
+```shell
+export BRANCH_NAME="$(git rev-parse --abbrev-ref HEAD | tr '/' '_')"
+```
 
-`docker-compose build heroku_releaser`
+considering that you have the docker image already [following the instructions](#Developing)
+```shell
+docker tag ticketfy_app:latest josimarcamargo/ticketfy:$BRANCH_NAME-dev
+docker push josimarcamargo/ticketfy:$BRANCH_NAME-dev
+```
+
+# When Releasing a beta image
+This is usually done in the branch release/number eg:
+```shell
+export LAST_TAG_IN_BRANCH="$(git describe --tags)"
+```
+
+considering that you have the docker image already [following the instructions](#Deployment-instructions)
+```shell
+docker tag ticketfy_production:latest josimarcamargo/ticketfy:$LAST_TAG_IN_BRANCH-beta
+docker push josimarcamargo/ticketfy:$LAST_TAG_IN_BRANCH-beta
+```
+
+# When releasing a production ready image
+This is usually done in the branch master eg:
+```shell
+export LAST_TAG_IN_BRANCH="$(git describe --tags)"
+```
+
+considering that you have the docker image already [following the instructions](#Deployment-instructions)
+```shell
+docker tag ticketfy_production:latest josimarcamargo/ticketfy:$LAST_TAG_IN_BRANCH
+docker push josimarcamargo/ticketfy:$LAST_TAG_IN_BRANCH
+```
+
+# Building release image
+Considering that you will deploy the docker image build on heroku you will need a Heroku releaser image
+
+This is usually done by CI, this image used only by heroku to run deploy tasks like: rake db:migrate and etc, It's really IMPORTANT that you build an Heroku releaser image
+with the same code that you are deploying at your environment, to avoid side effects like running more are less database migrations that you need
+
+```shell
+docker-compose build heroku_releaser
+```
 
 Tag the Heroku releaser image
-`docker tag ticketfy_heroku_releaser:latest registry.heroku.com/ticketfy-beta/release`
+```shell
+docker tag ticketfy_heroku_releaser:latest registry.heroku.com/ticketfy-beta/release
+```
 
 Sending images to heroku container registry
 You will need to be logged first `heroku login`
@@ -92,18 +147,24 @@ docker push registry.heroku.com/ticketfy-beta/release
 ```
 
 Tag image for docker hub
-`docker tag ticketfy_production:latest josimarcamargo/ticketfy:beta`
+```shell
+docker tag ticketfy_production:latest josimarcamargo/ticketfy:beta
+```
 
 Sending images to docker hub
-`docker push josimarcamargo/ticketfy:beta`
+```shell
+docker push josimarcamargo/ticketfy:beta
+```
 
 
 Telling heroku to deploy the new image
 
 with the heroku cli installed: `heroku container:release web release -a ticketfy-beta`
 
-Some CI's has the heroku cli available, if that is not your case, this also can be done with a docker image, without installing the heroku cli: `docker run --rm -e HEROKU_API_KEY=$HEROKU_API_KEY josimarcamargo/heroku_cli container:release web release -a ticketfy-beta`
-
+Some CI's has the heroku cli available, if that is not your case, this also can be done with a docker image, without installing the heroku cli:
+```shell
+docker run --rm -e HEROKU_API_KEY=$HEROKU_API_KEY josimarcamargo/heroku_cli container:release web release -a ticketfy-beta
+```
 
 * Default User :
   - email: **admin@ticketfy**
