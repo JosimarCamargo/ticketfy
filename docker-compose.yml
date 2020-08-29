@@ -1,4 +1,4 @@
-version: '3'
+version: '3.2'
 
 services:
   app: &app
@@ -52,6 +52,8 @@ services:
     image: ticketfy_production
     build:
       context: .
+      cache_from:
+        - josimarcamargo/ticketfy:0.0.2-beta
       dockerfile: ./docker/Dockerfile
       args:
         RAILS_ENV: production

@@ -10,7 +10,8 @@ RUN gem install bundler:2.1.4
 WORKDIR /app
 
 # takes leverage the docker cache
-COPY Gemfile Gemfile.lock ./
+COPY Gemfile ./
+COPY Gemfile.lock ./
 RUN bundle install --binstubs --jobs 4
 
 COPY . .
