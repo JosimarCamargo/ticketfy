@@ -144,6 +144,9 @@ Layout/SpaceBeforeComment:
 Layout/SpaceBeforeFirstArg:
   Enabled: true
 
+Style/AsciiComments:
+  Enabled: false
+
 Style/DefWithParentheses:
   Enabled: true
 
