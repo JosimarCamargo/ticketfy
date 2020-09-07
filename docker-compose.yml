@@ -1,9 +1,12 @@
-version: '3'
+version: '3.2'
 
 services:
   app: &app
     build:
       context: .
+      cache_from:
+        - $DOCKER_IMAGE_CACHE_BRANCH_VERSION # fetch $DOCKER_IMAGE_CACHE from env host, and uses as cache image, the image needs to be pulled first
+        - josimarcamargo/ticketfy:latest
       dockerfile: ./docker/Dockerfile
       args:
         COMMAND: rails s -b 0.0.0.0
@@ -35,6 +38,9 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
+      cache_from:
+        - $DOCKER_IMAGE_CACHE_BRANCH_VERSION # fetch $DOCKER_IMAGE_CACHE from env host, and uses as cache image, the image needs to be pulled first
+        - josimarcamargo/ticketfy:latest
       args:
         RAILS_ENV: test
         ENVIRONMENT_PACKAGES: libc6-compat chromium chromium-chromedriver
@@ -53,6 +59,9 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
+      cache_from:
+        - $DOCKER_IMAGE_CACHE_BRANCH_VERSION # fetch $DOCKER_IMAGE_CACHE from env host, and uses as cache image, the image needs to be pulled first
+        - josimarcamargo/ticketfy:latest
       args:
         RAILS_ENV: production
         COMMAND: rails s -b 0.0.0.0
@@ -71,6 +80,9 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile
+      cache_from:
+        - $DOCKER_IMAGE_CACHE_BRANCH_VERSION # fetch $DOCKER_IMAGE_CACHE from env host, and uses as cache image, the image needs to be pulled first
+        - josimarcamargo/ticketfy:latest
       args:
         RAILS_ENV: production
         RAILS_MASTER_KEY: $RAILS_MASTER_KEY # fetch $RAILS_MASTER_KEY from env host

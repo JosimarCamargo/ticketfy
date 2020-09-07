@@ -25,7 +25,7 @@ Things you may want to cover:
 
 ## How to run the test suite and linters
 
-# You will need first build the project or get an image with test setup
+You will need first build the project or get an image with test setup
 Images are available at docker hub
 https://hub.docker.com/repository/docker/josimarcamargo/ticketfy
 https://hub.docker.com/repository/docker/josimarcamargo/ticketfy-beta
@@ -75,52 +75,78 @@ docker-compose down
 ## Services (job queues, cache servers, search engines, etc.)
 Work in progress..
 
-## Deployment instructions
+### Building
+The building and deploy is usually done by CI when there is changes on branch master for production and on branch release/number for beta.
 
-Building production manually, this is usually done by CI when there is changes on branch master for production and branch release/number for beta, the environment needs to have exported the RAILS_MASTER_KEY
-
-```shell
-docker-compose build production
-```
+The build deploy has 3 basics steps:
+  - Set build enrollment variables
+  - Get the cache images
+  - Building the image
 
 ## Tagging the docker image
 This project use the docker tag system as cache to improve the speed build and save some resources
 
-# When DEV
-## This is it's used just to share/deploy an image on the early development stages
+## When building a DEV
+*This it's used just to share/deploy an image on the early development stages*
+
+Set build enrollment variables
 You will must have the $BRANCH_NAME without slashes('/') set eg:
 ```shell
 export BRANCH_NAME="$(git rev-parse --abbrev-ref HEAD | tr '/' '_')"
 ```
 
-considering that you have the docker image already [following the instructions](#Developing)
+Get the cache images
+```shell
+docker pull josimarcamargo/ticketfy:latest > /dev/null && echo "production image found" || echo "production image not
+```
+
+Build the docker image [following the instructions](#Developing), then tag and send the image to docker hub
 ```shell
 docker tag ticketfy_app:latest josimarcamargo/ticketfy:$BRANCH_NAME-dev
 docker push josimarcamargo/ticketfy:$BRANCH_NAME-dev
 ```
 
-# When Releasing a beta image
-This is usually done in the branch release/number eg:
+# When building a Beta image
+*This is usually done in the branch release/number with the **VERSION file updated** to version to be released eg:*
+Set build enrollment variables
 ```shell
-export LAST_TAG_IN_BRANCH="$(git describe --tags)"
+export VERSION=`cat VERSION` # set a environment variable with the content of file VERSION
+export DOCKER_IMAGE_CACHE_BRANCH_VERSION=josimarcamargo/ticketfy:$VERSION-beta # set the docker image that will be used as cache for this build
 ```
 
-considering that you have the docker image already [following the instructions](#Deployment-instructions)
+Get the cache images
 ```shell
-docker tag ticketfy_production:latest josimarcamargo/ticketfy:$LAST_TAG_IN_BRANCH-beta
-docker push josimarcamargo/ticketfy:$LAST_TAG_IN_BRANCH-beta
+docker pull $DOCKER_IMAGE_CACHE_BRANCH_VERSION > /dev/null && echo "branch image found" || echo "branch image not found"
+docker pull josimarcamargo/ticketfy:latest > /dev/null && echo "production image found" || echo "production image not found" # needs to be improved, to run only when the 'docker pull $DOCKER_IMAGE_CACHE_BRANCH_VERSION' fail
 ```
 
-# When releasing a production ready image
-This is usually done in the branch master eg:
+Building the image
 ```shell
-export LAST_TAG_IN_BRANCH="$(git describe --tags)"
+docker-compose build production
+docker tag ticketfy_production:latest $DOCKER_IMAGE_CACHE_BRANCH_VERSION
 ```
 
-considering that you have the docker image already [following the instructions](#Deployment-instructions)
+# When building a production ready image
+**This is should be done in the branch master**
+
+Set build enrollment variables
 ```shell
-docker tag ticketfy_production:latest josimarcamargo/ticketfy:$LAST_TAG_IN_BRANCH
-docker push josimarcamargo/ticketfy:$LAST_TAG_IN_BRANCH
+export VERSION=`cat VERSION` # set a environment variable with the content of file VERSION
+export DOCKER_IMAGE_CACHE_BRANCH_VERSION=josimarcamargo/ticketfy:$VERSION # set the docker image that will be used as cache for this build
+```
+
+Get the cache images
+```shell
+docker pull $DOCKER_IMAGE_CACHE_BRANCH_VERSION > /dev/null && echo "branch image found" || echo "branch image not found"
+docker pull josimarcamargo/ticketfy:latest > /dev/null && echo "production image found" || echo "production image not found" # needs to be improved, to run only when the 'docker pull $DOCKER_IMAGE_CACHE_BRANCH_VERSION' fail
+```
+
+Building the image
+```shell
+docker tag ticketfy_production:latest josimarcamargo/ticketfy:$VERSION
+docker tag ticketfy_production:latest josimarcamargo/ticketfy:latest
+docker push josimarcamargo/ticketfy:$VERSION
+docker push josimarcamargo/ticketfy:latest
 ```
 
 # Building release image
@@ -129,6 +155,7 @@ Considering that you will deploy the docker image build on heroku you will need 
 This is usually done by CI, this image used only by heroku to run deploy tasks like: rake db:migrate and etc, It's really IMPORTANT that you build an Heroku releaser image
 with the same code that you are deploying at your environment, to avoid side effects like running more are less database migrations that you need
 
+Here is used the same docker image as cache, that was used at the build step, so if the cache it's not been used, check if steps 'Set build enrollment variables' and 'Get the cache images' are done always respect if are building a release image for beta or production environment
 ```shell
 docker-compose build heroku_releaser
 ```
@@ -138,6 +165,7 @@ Tag the Heroku releaser image
 docker tag ticketfy_heroku_releaser:latest registry.heroku.com/ticketfy-beta/release
 ```
 
+## Deployment instructions
 Sending images to heroku container registry
 You will need to be logged first `heroku login`
 ´heroku container:login`
