@@ -9,6 +9,9 @@ end
 require 'spec_helper'
 require 'capybara/rspec'
 
+# sometimes 'dotenv-rails' doesn't not load  ENV DOCKER_MODE before the rspec starts,
+# if so explicit export
+# I will remove the 'dotenv-rails' in favor of rails credentials
 if ENV['DOCKER_MODE']
   Capybara.register_driver :selenium_chrome_headless_docker_friendly do |app|
     Capybara::Selenium::Driver.load_selenium
