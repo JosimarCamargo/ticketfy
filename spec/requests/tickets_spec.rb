@@ -52,7 +52,7 @@ RSpec.describe 'Tickets Management' do
           expect(response).to have_http_status(:ok)
         end
 
-        it "doesn't includes at response the resource id" do
+        xit "doesn't includes at response the resource id" do
           expect(response.body).not_to include(resource.id.to_s)
         end
       end

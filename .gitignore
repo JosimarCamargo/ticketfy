@@ -28,3 +28,9 @@
 
 # SimpleCov Report file
 coverage
+
+# override local envs from dotenv gem
+.env*.local
+
+# Editor files
+.vscode/

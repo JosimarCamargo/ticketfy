@@ -1,11 +1,106 @@
-version: '3'
+version: '3.2'
 
 services:
-  db:
-    image: postgres:9.6-alpine
+  app: &app
+    build:
+      context: .
+      cache_from:
+        - $DOCKER_IMAGE_CACHE_BRANCH_VERSION # fetch $DOCKER_IMAGE_CACHE from env host, and uses as cache image, the image needs to be pulled first
+        - josimarcamargo/ticketfy:latest
+      dockerfile: ./docker/Dockerfile
+      args:
+        COMMAND: rails s -b 0.0.0.0
+        RAILS_ENV: development
+    tmpfs:
+      - /tmp
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/app
+      - rails_cache:/app/tmp/cache # share cache between containers for dev purposes and fix problems with permission when running with root user
+      - ./docker/.env.development:/app/.env.development
+    environment:
+      HISTFILE: /app/log/.bash_history
+      EDITOR: vi
+    depends_on:
+      - postgres
     ports:
-      - 5432:5432
+      - '3000:3000'
+
+  runner:
+    <<: *app
+    command: /bin/bash
+    ports:
+      - '3001:3000'
+
+  tester:
+    <<: *app
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      cache_from:
+        - $DOCKER_IMAGE_CACHE_BRANCH_VERSION # fetch $DOCKER_IMAGE_CACHE from env host, and uses as cache image, the image needs to be pulled first
+        - josimarcamargo/ticketfy:latest
+      args:
+        RAILS_ENV: test
+        ENVIRONMENT_PACKAGES: libc6-compat chromium chromium-chromedriver
+    environment:
+      DOCKER_MODE: 'true'
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432
+      HISTFILE: /app/log/.bash_history
+      EDITOR: vi
+    command: /bin/bash
+    ports:
+      - '3002:3000'
+
+  production:
+    <<: *app
+    image: ticketfy_production
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      cache_from:
+        - $DOCKER_IMAGE_CACHE_BRANCH_VERSION # fetch $DOCKER_IMAGE_CACHE from env host, and uses as cache image, the image needs to be pulled first
+        - josimarcamargo/ticketfy:latest
+      args:
+        RAILS_ENV: production
+        COMMAND: rails s -b 0.0.0.0
+        RAILS_MASTER_KEY: $RAILS_MASTER_KEY # fetch $RAILS_MASTER_KEY from env host
+        RAILS_SERVE_STATIC_FILES: 'true'
+    environment: # those environments variables are not persisted at the build image, this makes easy spin this container in dev, also works as docs
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432 # this makes easy spin this container in dev
+      RAILS_MASTER_KEY: $RAILS_MASTER_KEY # this makes easy spin this container in dev
+    ports:
+      - '3000:3000'
+
+
+  heroku_releaser:
+    <<: *app
+    image: ticketfy_heroku_releaser
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      cache_from:
+        - $DOCKER_IMAGE_CACHE_BRANCH_VERSION # fetch $DOCKER_IMAGE_CACHE from env host, and uses as cache image, the image needs to be pulled first
+        - josimarcamargo/ticketfy:latest
+      args:
+        RAILS_ENV: production
+        RAILS_MASTER_KEY: $RAILS_MASTER_KEY # fetch $RAILS_MASTER_KEY from env host
+        COMMAND: rake db:migrate
+
+  postgres:
+    container_name: postgres
+    image: postgres:11.6-alpine
+    volumes:
+      - postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD:
-    volumes:
-      - $HOME/Docker/Volumes/PostgresAlpine9.6:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U postgres -h 127.0.0.1
+      interval: 5s
+    ports:
+      - ${POSTGRES_EXTERNAL_PORT:-5432}:5432 # allows change the external port, usefully when host already has the port used like: SemaphoreCI, to use just set POSTGRES_EXTERNAL_PORT as environment variable
+
+volumes:
+  postgres:
+  rails_cache:
