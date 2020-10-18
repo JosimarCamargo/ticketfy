@@ -97,7 +97,7 @@ export BRANCH_NAME="$(git rev-parse --abbrev-ref HEAD | tr '/' '_')"
 
 Get the cache images
 ```shell
-docker pull josimarcamargo/ticketfy:latest > /dev/null && echo "production image found" || echo "production image not
+docker pull josimarcamargo/ticketfy:latest > /dev/null && echo "production image found" || echo "production image not found"
 ```
 
 Build the docker image [following the instructions](#Developing), then tag and send the image to docker hub
@@ -143,6 +143,7 @@ docker pull josimarcamargo/ticketfy:latest > /dev/null && echo "production image
 
 Building the image
 ```shell
+docker-compose build production
 docker tag ticketfy_production:latest josimarcamargo/ticketfy:$VERSION
 docker tag ticketfy_production:latest josimarcamargo/ticketfy:latest
 docker push josimarcamargo/ticketfy:$VERSION
@@ -150,40 +151,41 @@ docker push josimarcamargo/ticketfy:latest
 ```
 
 # Building release image
-Considering that you will deploy the docker image build on heroku you will need a Heroku releaser image
+Considering that you will deploy the docker image build on Heroku, you will need a Heroku releaser image
 
 This is usually done by CI, this image used only by heroku to run deploy tasks like: rake db:migrate and etc, It's really IMPORTANT that you build an Heroku releaser image
-with the same code that you are deploying at your environment, to avoid side effects like running more are less database migrations that you need
+with the same code that you are deploying at your environment, to avoid side effects like running more or less database migrations that you need
 
-Here is used the same docker image as cache, that was used at the build step, so if the cache it's not been used, check if steps 'Set build enrollment variables' and 'Get the cache images' are done always respect if are building a release image for beta or production environment
+Here is used the same docker image as cache, that was used at the build step, so if the cache it's not been used, check if steps 'Set build enrollment variables' and 'Get the cache images' are done, and always respect if are building a release image for beta or production environment
 ```shell
 docker-compose build heroku_releaser
 ```
 
-Tag the Heroku releaser image
+Tag the Heroku releaser image for beta
 ```shell
 docker tag ticketfy_heroku_releaser:latest registry.heroku.com/ticketfy-beta/release
+```
+
+Tag the Heroku releaser image for production
+```shell
+docker tag ticketfy_heroku_releaser:latest registry.heroku.com/ticketfy/release
 ```
 
 ## Deployment instructions
 Sending images to heroku container registry
 You will need to be logged first `heroku login`
 ´heroku container:login`
+for beta
 ```shell
 docker push registry.heroku.com/ticketfy-beta/web
 docker push registry.heroku.com/ticketfy-beta/release
 ```
 
-Tag image for docker hub
+for production
 ```shell
-docker tag ticketfy_production:latest josimarcamargo/ticketfy:beta
+docker push registry.heroku.com/ticketfy/web
+docker push registry.heroku.com/ticketfy/release
 ```
-
-Sending images to docker hub
-```shell
-docker push josimarcamargo/ticketfy:beta
-```
-
 
 Telling heroku to deploy the new image
 
