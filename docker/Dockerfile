@@ -3,7 +3,7 @@ FROM ruby:2.6.5-alpine3.10
 # ARGS: RAILS_ENV, ENVIRONMENT_PACKAGES, COMMAND, RAILS_MASTER_KEY, RAILS_SERVE_STATIC_FILES
 
 RUN apk add --update build-base linux-headers bash git postgresql-dev \
-  postgresql-client nodejs yarn curl tzdata
+  postgresql-client nodejs yarn curl tzdata shared-mime-info
 
 RUN gem install bundler:2.1.4
 
