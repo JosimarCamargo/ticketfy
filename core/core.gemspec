@@ -13,7 +13,8 @@ Gem::Specification.new do |spec|
   spec.email       = ['josimar_camargo@hotmail.com']
   spec.homepage    = 'https://github.com/JosimarCamargo/ticketfy'
   spec.summary     = 'Ticketfy Core Engine.'
-  spec.description = 'This engine has the mission to allow the ticketfy data models and database structure be shared in different applications.'
+  spec.description = 'This engine allows the ticketfy data models and '\
+    'database structure be shared in different applications.'
   spec.license     = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
