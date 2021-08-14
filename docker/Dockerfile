@@ -17,6 +17,11 @@ WORKDIR /app
 # was built outside the CI and the next docker images, couldn't use the cache properly(speding more resource to build), so I recomend to not build images that are not
 # dev images locally, on production or beta, always let the CI build the image
 COPY Gemfile Gemfile.lock ./
+
+# Copy our local engine, allowing to install depedencies, but not the entire engine to not reset docker build cache
+COPY core/Gemfile core/core.gemspec ./core/
+COPY core/lib/core ./core/lib/core
+
 RUN bundle install --binstubs --jobs 4
 
 COPY . .
