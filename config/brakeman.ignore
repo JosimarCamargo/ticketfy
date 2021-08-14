@@ -1,0 +1,97 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Dynamic Render Path",
+      "warning_code": 15,
+      "fingerprint": "7f542f44e664cd4563dec3a19c0dd341092badd8bb37c8305265f7514093528e",
+      "check_name": "Render",
+      "message": "Render path contains parameter value",
+      "file": "app/views/tickets/show.html.erb",
+      "line": 41,
+      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
+      "code": "render(action => Ticket.find(params[:id]).replies, {})",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "TicketsController",
+          "method": "show",
+          "line": 13,
+          "file": "app/controllers/tickets_controller.rb",
+          "rendered": {
+            "name": "tickets/show",
+            "file": "app/views/tickets/show.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "tickets/show"
+      },
+      "user_input": "params[:id]",
+      "confidence": "Weak",
+      "note": "this is a false positive due to rails sintax"
+    },
+    {
+      "warning_type": "Redirect",
+      "warning_code": 18,
+      "fingerprint": "832bf8dd4c66de7751d5460825a3f2b6cbb7e388ca5feeaf8a09b0781e94f9a0",
+      "check_name": "Redirect",
+      "message": "Possible unprotected redirect",
+      "file": "app/controllers/replies_controller.rb",
+      "line": 13,
+      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
+      "code": "redirect_to(Ticket.find(params[:ticket_id]))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "RepliesController",
+        "method": "create"
+      },
+      "user_input": "params[:ticket_id]",
+      "confidence": "Weak",
+      "note": "For now, all tickets are accesible to anyone, so there is no need to check anything about the ticket redirect"
+    },
+    {
+      "warning_type": "Redirect",
+      "warning_code": 18,
+      "fingerprint": "9b5bb66e6a67d903e58b250405d1d2457b9707e28ae52127ff562a6ee68079e6",
+      "check_name": "Redirect",
+      "message": "Possible unprotected redirect",
+      "file": "app/controllers/tickets_controller.rb",
+      "line": 35,
+      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
+      "code": "redirect_to(Ticket.find(params[:id]), :notice => \"Ticket was successfully updated.\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "TicketsController",
+        "method": "update"
+      },
+      "user_input": "params[:id]",
+      "confidence": "Weak",
+      "note": "For now, all tickets are accesible to anyone, so there is no need to check anything about the ticket redirect"
+    },
+    {
+      "warning_type": "Redirect",
+      "warning_code": 18,
+      "fingerprint": "b4398125b5d581fce731d0b1e2caa6155f74f67c7286fdb42920b3bb119aaead",
+      "check_name": "Redirect",
+      "message": "Possible unprotected redirect",
+      "file": "app/controllers/users_controller.rb",
+      "line": 35,
+      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
+      "code": "redirect_to(User.find(params[:id]), :notice => \"User was successfully updated.\")",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "UsersController",
+        "method": "update"
+      },
+      "user_input": "params[:id]",
+      "confidence": "Weak",
+      "note": "For now, all users are accessible to anyone, so there is no need to check anything about the user redirect"
+    }
+  ],
+  "updated": "2021-08-14 17:40:37 -0300",
+  "brakeman_version": "4.7.1"
+}
