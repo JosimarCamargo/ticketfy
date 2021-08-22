@@ -7,7 +7,7 @@ GIT
       i18n (>= 0.8)
 
 PATH
-  remote: core
+  remote: ../core
   specs:
     core (0.1.0)
       rails (~> 5.2.2, >= 5.2.2.1)
