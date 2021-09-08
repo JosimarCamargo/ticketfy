@@ -34,7 +34,7 @@ group :test do
 end
 
 group :development do
-  gem 'better_errors', '~> 2.5', '>= 2.5.1'
+  gem 'better_errors', '~> 2.8'
   gem 'binding_of_caller'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'pry-rails'
