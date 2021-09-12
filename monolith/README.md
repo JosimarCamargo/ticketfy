@@ -1,6 +1,6 @@
 # TicketFy
 
-[![Build Status](https://semaphoreci.com/api/v1/ticketfy/ticketfy/branches/master/badge.svg)](https://semaphoreci.com/ticketfy/ticketfy)
+[![Build Status](https://semaphoreci.com/api/v1/ticketfy/ticketfy_monolith/branches/master/badge.svg)](https://semaphoreci.com/ticketfy/ticketfy_monolith)
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/c8f29240ac491a6cfb03/maintainability)](https://codeclimate.com/github/JosimarCamargo/ticketfy/maintainability)
 
