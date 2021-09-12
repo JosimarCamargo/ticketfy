@@ -30,6 +30,10 @@ Images are available at docker hub
 https://hub.docker.com/repository/docker/josimarcamargo/ticketfy
 https://hub.docker.com/repository/docker/josimarcamargo/ticketfy-beta
 
+## Before run docker-compose commands please get in the monolith folder first
+```shell
+cd monolith
+```
 ### Build and Database setup
 Building an container image and up the test environment containers:
 ```shell

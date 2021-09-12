@@ -3,11 +3,11 @@ version: '3.2'
 services:
   app: &app
     build:
-      context: .
+      context: ../
       cache_from:
         - $DOCKER_IMAGE_CACHE_BRANCH_VERSION # fetch $DOCKER_IMAGE_CACHE from env host, and uses as cache image, the image needs to be pulled first
         - josimarcamargo/ticketfy:latest
-      dockerfile: ./docker/Dockerfile
+      dockerfile: monolith/docker/Dockerfile
       args:
         COMMAND: rails s -b 0.0.0.0
         RAILS_ENV: development
@@ -16,12 +16,17 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - .:/app
-      - rails_cache:/app/tmp/cache # share cache between containers for dev purposes and fix problems with permission when running with root user
-      - ./docker/.env.development:/app/.env.development
+      - .:/root_app_folder/monolith
+      - rails_cache:/root_app_folder/monolith/tmp/cache # share cache between containers for dev purposes and fix problems with permission when running with root user
+      - ./docker/.env.development:/root_app_folder/monolith/.env.development
     environment:
-      HISTFILE: /app/log/.bash_history
+      HISTFILE: /root_app_folder/monolith/log/.bash_history
       EDITOR: vi
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432 # update this line to set, another db address, aparentemente, para rodar comandos rake etc, esta linha se faz
+      # necessária, aparentemente essas variaveis não ficam com no container, elas são passadas quando o container é iniciado, pelo menos foi
+      # oque observei usando o comando
+      #  docker-compose run app bash
+      # vou testar com o build para ver se a variavel é persistida
     depends_on:
       - postgres
     ports:
@@ -36,8 +41,8 @@ services:
   tester:
     <<: *app
     build:
-      context: .
-      dockerfile: ./docker/Dockerfile
+      context: ../
+      dockerfile: monolith/docker/Dockerfile
       cache_from:
         - $DOCKER_IMAGE_CACHE_BRANCH_VERSION # fetch $DOCKER_IMAGE_CACHE from env host, and uses as cache image, the image needs to be pulled first
         - josimarcamargo/ticketfy:latest
@@ -47,7 +52,7 @@ services:
     environment:
       DOCKER_MODE: 'true'
       DATABASE_URL: postgres://postgres:postgres@postgres:5432
-      HISTFILE: /app/log/.bash_history
+      HISTFILE: /root_app_folder/monolith/log/.bash_history
       EDITOR: vi
     command: /bin/bash
     ports:
@@ -57,8 +62,8 @@ services:
     <<: *app
     image: ticketfy_production
     build:
-      context: .
-      dockerfile: ./docker/Dockerfile
+      context: ../
+      dockerfile: monolith/docker/Dockerfile
       cache_from:
         - $DOCKER_IMAGE_CACHE_BRANCH_VERSION # fetch $DOCKER_IMAGE_CACHE from env host, and uses as cache image, the image needs to be pulled first
         - josimarcamargo/ticketfy:latest
@@ -73,13 +78,12 @@ services:
     ports:
       - '3000:3000'
 
-
   heroku_releaser:
     <<: *app
     image: ticketfy_heroku_releaser
     build:
-      context: .
-      dockerfile: ./docker/Dockerfile
+      context: ../
+      dockerfile: monolith/docker/Dockerfile
       cache_from:
         - $DOCKER_IMAGE_CACHE_BRANCH_VERSION # fetch $DOCKER_IMAGE_CACHE from env host, and uses as cache image, the image needs to be pulled first
         - josimarcamargo/ticketfy:latest

@@ -6,6 +6,12 @@ GIT
     faker (2.2.1)
       i18n (>= 0.8)
 
+PATH
+  remote: ../core
+  specs:
+    core (0.1.0)
+      rails (~> 5.2.2, >= 5.2.2.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -293,6 +299,7 @@ DEPENDENCIES
   bootsnap (>= 1.1.0)
   brakeman (~> 4.7)
   capybara (~> 3.28)
+  core!
   devise (>= 4.7.1)
   dotenv-rails (~> 2.7, >= 2.7.1)
   factory_bot_rails

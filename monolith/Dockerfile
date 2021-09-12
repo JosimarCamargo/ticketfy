@@ -1,3 +1,4 @@
+# This Dockerfile are being deprecated
 FROM ruby:2.6.1-alpine3.9
 
 RUN apk add --no-cache --update build-base \
