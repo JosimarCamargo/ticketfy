@@ -1,3 +1,4 @@
+# This Dockerfile was heavily inspired by https://evilmartians.com/chronicles/ruby-on-whales-docker-for-ruby-rails-development
 FROM ruby:2.6.5-alpine3.10
 
 # ARGS: RAILS_ENV, ENVIRONMENT_PACKAGES, COMMAND, RAILS_MASTER_KEY, RAILS_SERVE_STATIC_FILES
@@ -7,7 +8,7 @@ RUN apk add --update build-base linux-headers bash git postgresql-dev \
 
 RUN gem install bundler:2.1.4
 
-WORKDIR /app
+WORKDIR /root_app_folder
 
 # takes leverage the docker cache, but due to docker behavior metadata, changes like
 # the file ownership on the files can cause the cache invalidation
@@ -16,15 +17,19 @@ WORKDIR /app
 # to avoid the cache invalidation in these cases, this can be ignored because the the cache invalidation happens only sometimes, when the cache image
 # was built outside the CI and the next docker images, couldn't use the cache properly(speding more resource to build), so I recomend to not build images that are not
 # dev images locally, on production or beta, always let the CI build the image
-COPY Gemfile Gemfile.lock ./
+COPY monolith/Gemfile monolith/Gemfile.lock monolith/
 
 # Copy our local engine, allowing to install depedencies, but not the entire engine to not reset docker build cache
-COPY core/Gemfile core/core.gemspec ./core/
-COPY core/lib/core ./core/lib/core
+COPY core/Gemfile core/core.gemspec core/
+COPY core/lib/core core/lib/core
 
-RUN bundle install --binstubs --jobs 4
+RUN cd monolith && bundle install --binstubs --jobs 4 && cd ..
 
-COPY . .
+# copy Main rails app
+COPY monolith ./monolith
+
+# copy rails engines
+COPY core/ ./core/
 
 # used to add packages like chromnium for test enviroment
 ARG ENVIRONMENT_PACKAGES
@@ -39,6 +44,9 @@ ENV RAILS_LOG_TO_STDOUT true
 
 # gets the RAILS_MASTER_KEY, used at assets:precompile and don't keep it in any image layer
 ARG RAILS_MASTER_KEY
+
+WORKDIR /root_app_folder/monolith
+
 RUN if [ $RAILS_ENV == 'production' ]; then rake assets:precompile; fi;
 
 ARG RAILS_SERVE_STATIC_FILES
