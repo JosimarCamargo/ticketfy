@@ -1,24 +1,5 @@
-# README
+# TicketFy
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This repository is being restructured and this readme is being updated with more information soon.
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Please check the [TicketFy link](https://github.com/JosimarCamargo/ticketfy/tree/master/monolith) to access the information about the TicketFy Project.
